@@ -1,0 +1,69 @@
+<section class="content-header">
+  <h1>
+    Add Sensor
+    <small>Add Sensor here</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="/dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li><a href="/dashboard/AddSensor">Add Sensor</a></li>
+  </ol>
+</section>
+
+
+<div class="col-md-6">
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Bordered Table</h3>
+    </div>
+
+    <div class="box-body">
+      <form [formGroup]="AddSensorForm" (ngSubmit)="onSubmit()">
+
+          <h1>Add Sensor</h1>
+          <p>Please fill in this form to Add New Sensor.</p>
+          <hr>
+          <label for="typeahead-format1"><b>Sensor Name:</b></label>
+          <input id="typeahead-format1" type="text" class="form-control" formControlName="SensorName" name="SensorName" />
+          <div *ngIf="submitted && f.SensorName.errors" class="invalid-feedback">
+            <div *ngIf="f.SensorName.errors.required"><label style="color:red;">Sensor Name</label></div>
+          </div>
+
+          <label><b>Sensor Type :</b></label>
+          <br>
+          <input id="typeahead-format" type="text" class="form-control" formControlName="SensorType" name="SensorType" [(ngModel)]="model" [ngbTypeahead]="search" [resultFormatter]="formatter" />
+          <div *ngIf="submitted && f.SensorType.errors" class="invalid-feedback">
+            <div *ngIf="f.SensorType.errors.required"><label style="color:red;">Sensor Type is required</label></div>
+          </div>
+          <label><b>What Location is this sensor is assigned to ?</b></label>
+          <select class="form-control" formControlName="SensorLocation" name="SensorLocation" (change)="LoadLoacation($event)">
+            <option *ngFor="let loc of locations" [value]="loc.id">{{loc.SiteName}}</option>
+          </select>
+        <div *ngIf="submitted && f.SensorLocation.errors" class="invalid-feedback">
+          <div *ngIf="f.SensorLocation.errors.required"><label style="color:red;">Sensor Location is required</label></div>
+        </div>
+
+          <label><b>Description:</b></label>
+          <input class="form-control" type="text" placeholder="Description" formControlName="Description" name="Description" required>
+          <div *ngIf="submitted && f.Description.errors" class="invalid-feedback">
+            <div *ngIf="f.Description.errors"><label style="color:red;">Description too Long</label></div>
+          </div>
+          <hr>
+
+          <button type="submit" class="btn btn-primary btn-block btn-flat " style="width: 100px !important;">Add Sensor</button>
+
+
+      </form>
+    </div>
+  </div>
+</div>
+<div class="col-md-6">
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Map</h3>
+    </div>
+
+    <div style="height: 500px; width: 596px">
+      <div class="map" id="map" class="match-parent"></div>
+    </div>
+  </div>
+</div>

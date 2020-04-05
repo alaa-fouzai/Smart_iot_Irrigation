@@ -1,0 +1,48 @@
+<section class="content-header">
+  <h1>
+    Sites
+    <small>you can see All you Sites</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="/dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Remouve Location</h3>
+    </div>
+    <div class="overlay" *ngIf="!Loaded">
+      <i class="fa fa-refresh fa-spin"></i>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+
+      <table class="table table-bordered">
+        <tbody><tr>
+          <th style="width: 5px">#</th>
+          <th style="width: 30px">Site name :</th>
+          <th style="width: 10px">Sensor Number :</th>
+          <th style="width: 40px">Coordinance</th>
+          <th style="width: 40px">Added :</th>
+          <th style="width: 15px">Remove :</th>
+        </tr>
+        <tr *ngFor="let item of sensors ; index as i;">
+          <td>{{i}}.</td>
+          <td>{{item.Name}}</td>
+          <td>
+            {{item.Description}}
+          </td>
+          <td>{{item.SensorCoordinates}}</td>
+          <td>{{item.createdate | date: 'dd/MM/yyyy'}}</td>
+          <td><button type="button" class="btn btn-block btn-danger" (click)="remove(item)"><i class="fa fa-fw fa-trash"></i> Remove</button></td>
+        </tr>
+
+        </tbody></table>
+
+    </div>
+
+  </div>
+</section>

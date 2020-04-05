@@ -1,0 +1,71 @@
+<section class="content-header">
+  <h1>
+    Sites
+    <small>you can see All you Sites</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="/dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+  </ol>
+</section>
+
+<div class="col-md-7">
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Bordered Table</h3>
+    </div>
+    <div class="overlay" *ngIf="!Loaded">
+      <i class="fa fa-refresh fa-spin"></i>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <table class="table table-bordered">
+        <tbody><tr>
+          <th style="width: 10px">#</th>
+          <th style="width: 40px">Site Name</th>
+          <th style="width: 40px">Description</th>
+          <th style="width: 200px">Change Site</th>
+          <th style="width: 25px">Change Location</th>
+          <th style="width: 20px">Save</th>
+        </tr>
+        <tr *ngFor="let Sens of sensors ; index as i;">
+          <td>{{i}}.</td>
+          <td><input type="text" #SiteName name="SiteName" value="{{Sens.Name}}" class="form-control"></td>
+          <td>
+            <input type="text" #Description name="Description" value="{{Sens.Description}}" class="form-control">
+          </td>
+          <td>
+            <div *ngFor="let loc of locations ;">
+              <div *ngIf="loc.SensorIds.includes(Sens.id)">{{loc.SiteName}}</div>
+            </div>
+            <select class="form-control"  name="SensorLocation" (change)="LoadLoacation($event)">
+                  <option  *ngFor="let loc of locations" [value]="loc.id">{{loc.SiteName}} </option>if
+            </select>
+          </td>
+          <td>
+            <button type="submit" class="btn btn-primary btn-flat" (click)="LoadLoacation(loc)">Change Location</button>
+          </td>
+          <td>
+            <button type="submit" class="btn btn-primary btn-flat" (click)="Update(SiteName.value,Description.value,loc)">Update</button>
+          </td>
+        </tr>
+
+        </tbody></table>
+    </div>
+
+  </div>
+  <!-- /.box -->
+
+  <!-- /.box-body -->
+</div>
+<!-- /.box -->
+<div class="col-md-5">
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Map</h3>
+    </div>
+
+    <div style="height: 500px; width: 500px">
+      <div class="map" id="map" class="match-parent"></div>
+    </div>
+  </div>
+</div>
