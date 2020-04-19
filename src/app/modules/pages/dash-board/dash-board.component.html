@@ -20,24 +20,6 @@
           <span class="info-box-text">Number of Locations</span>
           <span class="info-box-number">{{ CurrentUser.locationIds.length }}<small> Locations</small></span>
         </div>
-        <div class="col-sm-6">
-          <!-- Progress bars -->
-          <div class="clearfix">
-            <span class="pull-left">Task #1</span>
-            <small class="pull-right">90%</small>
-          </div>
-          <div class="progress xs">
-            <div class="progress-bar progress-bar-green" style="width: 90%;"></div>
-          </div>
-
-          <div class="clearfix">
-            <span class="pull-left">Task #2</span>
-            <small class="pull-right">70%</small>
-          </div>
-          <div class="progress xs">
-            <div class="progress-bar progress-bar-green" style="width: 70%;"></div>
-          </div>
-        </div>
         <!-- /.info-box-content -->
       </div>
       <!-- /.info-box -->
@@ -92,7 +74,7 @@
   <div class="box">
 
     <div class="box-header with-border">
-      <h3 class="box-title">Title</h3>
+      <h3 class="box-title">Weither in the next 5 days</h3>
 
       <div class="box-tools pull-right">
         <button class="btn btn-box-tool" data-toggle="tooltip" data-widget="collapse" title="Collapse"
@@ -103,9 +85,27 @@
       </div>
     </div>
     <div class="box-body">
-      {{ CurrentUser.LastName }} ,Start creating your amazing application! {{ CurrentUser.LastName }}
-      {{message}}
-    </div>
+      {{ CurrentUser.LastName }} ,Welcome to your amazing application!<br>
+      <div *ngIf="weitherLoaded; else elseBlock">
+        Location : {{LocationName}}
+        <ul class="weither">
+          <div *ngFor="let item of weitherData.list">
+          <li class="classli"  >
+
+            {{item.dt * 1000 | date:'short'}}<br>
+            Tempreture :{{ item.main.temp }} C<br>
+            Humidity  :{{ item.main.humidity }} %<br>
+            {{item.weather[0].main}}<span class="glyphicon glyphicon-cloud" *ngIf="item.weather[0].main == 'Clouds'" ></span>
+            <span class="glyphicon glyphicon-sort-by-attributes-alt" *ngIf="item.weather[0].main == 'Rain'" ></span>
+
+          </li>
+          </div>
+        </ul>
+
+      </div>
+      </div>
+      <ng-template #elseBlock>Waiting for weither data <i class="fa fa-refresh fa-spin"></i></ng-template>
+
     <!-- /.box-body -->
     <div class="box-footer">
       Footer
@@ -114,31 +114,80 @@
 
     <!-- /.box-footer-->
   </div>
+
   <!-- /.box -->
   <div class="row">
+
   <div *ngFor="let Ses of Sensors;index as i;">
 
         <!-- Left col -->
-        <section class="col-lg-6 connectedSortable ui-sortable">
+        <section class="col-lg-6">
 
           <!-- Custom tabs (Charts with tabs)-->
-          <div class="nav-tabs-custom" style="cursor: move;">
+          <div class="nav-tabs-custom">
             <div class="overlay" *ngIf="!Loaded">
               <i class="fa fa-refresh fa-spin"></i>
             </div>
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-right ui-sortable-handle">
-              <li class="active"><a href="#revenue-chart" data-toggle="tab" aria-expanded="true">Area</a></li>
-              <li class=""><a href="#sales-chart" data-toggle="tab" aria-expanded="false">Donut</a></li>
-              <li class="pull-left header"><i class="fa fa-inbox"></i> Sensor</li>
+
+              <li class="pull-left header"><i class="fa fa-inbox"></i>{{i+1}} :{{ Ses.Name }}</li>
             </ul>
+
+
             <canvas baseChart
                     [datasets]="dataaa[i]"
-                    [labels]="BarChartLabels"
+                    [labels]="BarChartLabels[i]"
                     [options]="BarChartOptions"
                     [legend]="BarChartLegend"
                     [chartType]="BarChartType"
             ></canvas>
+            <div class="progress-card">
+              <div class="box-footer text-black">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <!-- Progress bars -->
+                    <div class="clearfix">
+                      <span class="pull-left"><p class="text-muted">Battery : {{Batterys[i]}}%</p></span>
+                    </div>
+                    <div class="progress xs">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{'width.%':Batterys[i]}" ></div>
+                    </div>
+
+                    <div class="clearfix">
+
+                      <span class="pull-left"><p class="text-muted">Last Reading :</p></span>
+                    </div>
+                    <div >
+                      <h4>{{lastReadTime[i]}}</h4>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-6">
+                    <div class="clearfix">
+                      <span class="pull-left">Task #3</span>
+                      <small class="pull-right">60%</small>
+                    </div>
+                    <div class="progress xs">
+                      <div class="progress-bar progress-bar-green" style="width: 60%;"></div>
+                    </div>
+
+                    <div class="clearfix">
+                      <span class="pull-left">Task #4</span>
+                      <small class="pull-right">40%</small>
+                    </div>
+                    <div class="progress xs">
+                      <div class="progress-bar progress-bar-green" style="width: 40%;"></div>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+            </div>
+
+
+
           </div>
           <!-- /.nav-tabs-custom -->
         </section>
@@ -146,4 +195,5 @@
       </div>
   </div>
   </section>
+
 <!-- /.content -->
