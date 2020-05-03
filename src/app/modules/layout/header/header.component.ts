@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {User} from '../../../models/Use.model';
+import { AuthService } from 'angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'app-header',
@@ -9,7 +11,7 @@ import {User} from '../../../models/Use.model';
 })
 export class HeaderComponent implements OnInit {
   CurrentUser = new User();
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -18,6 +20,10 @@ export class HeaderComponent implements OnInit {
   onLogout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
+    try {
+      this.authService.signOut();
+    } catch (e) {
+    }
     this.router.navigate(['/auth']);
   }
 

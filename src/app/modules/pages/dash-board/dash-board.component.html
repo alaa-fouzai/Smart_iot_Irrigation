@@ -69,6 +69,43 @@
     </div>
     <!-- /.col -->
   </div>
+  <div class="box">
+
+    <div class="box-header with-border">
+      <h3 class="box-title ">
+        <div *ngIf="checked ; else elseBlock1" >Automatic Irrigation {{LocationName}}</div>
+        <ng-template #elseBlock1>Manual Irrigation {{LocationName}}</ng-template>
+
+      </h3>
+
+      <div class="box-tools pull-right">
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="checked" (change)="AutoFunction()" data-toggle="tooltip">
+          <span class="slider round"></span>
+        </label>
+        <button class="btn btn-box-tool" data-toggle="tooltip" data-widget="collapse" title="Collapse"
+                type="button">
+          <i class="fa fa-minus"></i></button>
+        <button class="btn btn-box-tool" data-toggle="tooltip" data-widget="remove" title="Remove" type="button">
+          <i class="fa fa-times"></i></button>
+      </div>
+    </div>
+    <div class="box-body">
+
+      <div *ngIf="!checked">hello
+      <button type="button" class="btn btn-block btn-success btn-lg" (click)="SendMessage('hello')">Pompe 1</button>
+      <button type="button" class="btn btn-block btn-success btn-lg">Pompe 2</button>
+      <button type="button" class="btn btn-block btn-success btn-lg">Pompe 3</button>
+      <button type="button" class="btn btn-block btn-success btn-lg">Pompe 4</button>
+      </div>
+    </div>
+
+    <!-- /.box-body -->
+
+
+
+    <!-- /.box-footer-->
+  </div>
 
   <!-- Default box -->
   <div class="box">
@@ -89,15 +126,82 @@
       <div *ngIf="weitherLoaded; else elseBlock">
         Location : {{LocationName}}
         <ul class="weither">
-          <div *ngFor="let item of weitherData.list">
-          <li class="classli"  >
+          <div *ngFor="let item of weitherData1">
+          <li class="classli weather"  >
 
-            {{item.dt * 1000 | date:'short'}}<br>
-            Tempreture :{{ item.main.temp }} C<br>
-            Humidity  :{{ item.main.humidity }} %<br>
+            {{item.time}}<br><!--
+            <span class="slink">Weather {{LocationName}}</span> <table class="fondo" style="background-color: #FFFFFF; font-family: Roboto; color: #868686;" cellpadding="0" cellspacing="0">
+            <tbody>
+            <tr class="hijo-1" style="background-color: #FFFFFF;">
+              <td class="bTempG" style="background-color: #FFFFFF;" colspan="2">
+                <span class="TgMax" style="color: #EB1924;">9°</span>
+                <span class="TgMin" style="color: #0076BA;">5°</span>
+              </td> <td class="iconG" colspan="3" style="background-color: #FFFFFF;">
+              <img src="https://www.theweather.com/css/images/widget/g14/new/big-13.png" alt="Overcast with thunderstorms">
+            </td>
+            </tr>
+            <div *ngFor="let item1 of item.data">
+            <tr class="hijo-all" style="background-color: #FFFFFF;">
+              <td class="blanco">&nbsp;</td> <td class="nomDay" style="color: #868686; background-color: #FFFFFF;">{{item1.time}}:00</td>
+              <td class="temps" style="background-color: #FFFFFF;"> <span class="TgMax" style="color: #EB1924;">{{item1.temp_max}}°</span>
+                <span class="TgMin" style="color: #0076BA;">{{item1.temp_min}}°</span></td> <td class="simb" style="background-color: #FFFFFF;">
+              <img src="https://www.theweather.com/css/images/widget/g14/new/small-7.png" alt="Overcast with light rain"> </td>
+              <td class="blanco">&nbsp;</td>
+            </tr>
+            </div>
+            <tr class="hijo-all" style="background-color: #FFFFFF;">
+              <td class="blanco">&nbsp;</td>
+
+            </tr>
+            </tbody>
+          </table>
+
             {{item.weather[0].main}}<span class="glyphicon glyphicon-cloud" *ngIf="item.weather[0].main == 'Clouds'" ></span>
-            <span class="glyphicon glyphicon-sort-by-attributes-alt" *ngIf="item.weather[0].main == 'Rain'" ></span>
+            <span class="glyphicon glyphicon-sort-by-attributes-alt" *ngIf="item.weather[0].main == 'Rain'" ></span>-->
+            <table id="webwid" class="widget new27" style="font-family: Roboto; color: #868686; background-color: #FFFFFF; border: 0px solid #D6D6D6;">
+              <tbody>
+              <tr>
+                <td>
 
+                  <span class="slink">Weather {{LocationName}}</span>
+                  <table class="fondo" style="background-color: #FFFFFF; font-family: Roboto; color: #868686; border: 0px solid #D6D6D6;">
+                  <tbody>
+                  <tr class="hijo-1" style="background-color: #FFFFFF;">
+                    <td class="bTempG" style="background-color: #FFFFFF;">
+                      <span class="TgMax" style="color: #EB1924;text-align:right">{{item.data[0].temp_max}}°</span>&nbsp;&nbsp;
+                      <span class="TgMin" style="color: #0076BA;text-align:right">{{item.data[0].temp_min}}°</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <img src="https://www.theweather.com/css/images/widget/g14/new/big-13.png" alt="Overcast with thunderstorms">
+                    </td>
+                    <td class="iconG" style="background-color: #FFFFFF;">
+                  </td>
+                  </tr>
+                  <table style="border: 1px solid #FFFFFF;">
+
+                  <ng-container *ngFor="let item1 of item.data">
+
+                    <tr style="background-color: #FFFFFF;">
+
+                      <td>&nbsp;</td>
+                        <td style="color: #868686; background-color: #FFFFFF; text-align:left ; padding: 5px">{{item1.time}}:00 </td>
+                      <td style="background-color: #FFFFFF; text-align:left; padding: 5px">
+                        <span class="TgMax" style="color: #EB1924; text-align:left">{{item1.temp_max | number : '1.0-2'}}°</span>
+                      </td>
+                      <td style="background-color: #FFFFFF; text-align:left; padding: 5px">
+                        <span class="TgMin" style="color: #0076BA; text-align:left">{{item1.temp_min | number : '1.0-2'}}°</span>
+                      </td>
+                        <td class="simb" style="background-color: #FFFFFF; text-align:left ; padding: 5px">
+                          <img src="https://www.theweather.com/css/images/widget/g14/new/small-7.png" alt="Overcast with light rain">
+                        </td>
+                     </tr>
+
+                  </ng-container>
+                  </table>
+                  </tbody>
+                </table>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </li>
           </div>
         </ul>

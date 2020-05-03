@@ -1,4 +1,4 @@
-import {Component, OnInit , ChangeDetectorRef} from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef, OnDestroy} from '@angular/core';
 import { UserService} from '../../../services/user.service';
 import { Injectable } from '@angular/core';
 import {User} from '../../../models/Use.model';
@@ -7,7 +7,9 @@ import {PageService} from '../../../modules/pages/pages/page.service';
 import {Location} from '../../../models/Location.model';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Sensor} from '../../../models/Sensor.model';
+import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
+import * as io from 'socket.io-client';
 @Component({
   selector: 'app-dash-board',
   templateUrl: './dash-board.component.html',
@@ -17,11 +19,14 @@ export class DashBoardComponent implements OnInit {
   CurrentUser = new User();
   private SensorsApiUrl = '/api/dashboard/SensorsData';
   private WeitherApiUrl = '/api/dashboard/weither';
+  private socket = io('http://localhost:3000/dashboard/IrrigationState');
   public Sensors: Array<Sensor> = [];
   Loaded = false;
   weitherLoaded = false;
   LocationName = '';
   weitherData;
+  weitherData1 = [];
+  checked;
   public dataaa = [];
   public Batterys = [];
   public lastReadTime = [];
@@ -63,19 +68,21 @@ export class DashBoardComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.socket.join();
     this.weitherLoaded = false;
     this.CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.pageServise.currentMessage.subscribe(message => {this.message = message;
                                                           if (this.message !== 'none') {
         this.load_data();
         this.load_weither();
-      }});
-    console.log('-----------------------------');
-    console.log(this.message);
+        this.pageServise.IrrigationState(localStorage.getItem('token') , this.message );
+      }
+    });
+    this.pageServise.AutomaticIrrigation.subscribe(message => {console.log('IrrigationService' , message);
+                                                               this.checked = message ; });
       }
   async load_data() {
     this.Sensors = [];
-    console.log(this.message);
     let param = this.message;
     if (this.message === 'none here') {
       // @ts-ignore
@@ -107,22 +114,17 @@ export class DashBoardComponent implements OnInit {
           title: 'Oops...',
           text: resJSON.message,
         });
-        console.log(resJSON.response);
       }
     }, error => {
-      console.log(error.toString());
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Something went wrong!',
       });
-      console.log(error);
     });
-    console.log(this.Sensors);
     return this.Sensors;
   }
   data_process(Sens) {
-    console.log('data process -------------', Sens);
     this.dataaa = [];
     this.BarChartLabels = [];
     this.Batterys = [];
@@ -157,39 +159,96 @@ export class DashBoardComponent implements OnInit {
       this.Batterys.push(batt);
       this.lastReadTime.push(lT);
     });
-    console.log('battery', this.Batterys);
-    console.log('time', this.lastReadTime);
-    console.log('End data process -------------');
     this.Loaded = true;
     this.ref.detectChanges();
+    this.addValueToChar();
   }
 
   private async load_weither() {
-    console.log('load weither');
-    let param = this.message;
+    const param = this.message;
     if (this.message === 'none here') {
       // @ts-ignore
-      param = this.CurrentUser.locationIds[0];
+      this.message = this.CurrentUser.locationIds[0];
     }
     const options = {
 
-      params: new HttpParams().append('token', localStorage.getItem('token')).append('location_id', param)
+      params: new HttpParams().append('token', localStorage.getItem('token')).append('location_id', this.message)
     };
     await this.http.get(this.WeitherApiUrl, options).subscribe(data => {
       this.weitherLoaded = true;
       const resSTR = JSON.stringify(data);
       const resJSON = JSON.parse(resSTR);
-      console.log('------> weither data', resJSON.message);
       this.LocationName = resJSON.message.city.name + ' ,' + resJSON.message.city.country;
       this.weitherData = resJSON.message;
+      // console.log('weither data', this.weitherData);
+      let currentDay = 0;
+      let i = 0 ;
+      let weither: any = {};
+      let weitherByTime = [];
+      this.weitherData1 = [];
+      this.weitherData.list.forEach((item) => {
+        // console.log('item', item);
+        const date = new Date(item.dt * 1000).getDate();
+        // console.log('date ', date);
+        const x: any = {};
+        x.temp = item.main.temp;
+        x.temp_max = item.main.temp_max;
+        x.temp_min = item.main.temp_min;
+        x.hum = item.main.humidity;
+        x.time = new Date(item.dt * 1000).getHours();
+        x.forcast = item.weather[0].main;
+        weitherByTime.push(x);
+        if (date !== currentDay) {
+          weither.time = new Date(item.dt * 1000).toDateString();
+          weither.data = weitherByTime;
+          currentDay = date;
+          this.weitherData1.push(weither);
+          weither = {};
+          weitherByTime = [];
+          i++;
+        }
+      }
+      );
+      // console.log('weither days', this.weitherData1);
     }, error => {
-      console.log(error.toString());
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Something went wrong!',
       });
-      console.log(error);
     });
+  }
+
+  AutoFunction() {
+    // console.log('checkbox triggerd', this.checked);
+    this.pageServise.changeIrrigationState(localStorage.getItem('token'), this.checked , this.message);
+  }
+  SendMessage(text) {
+    // console.log('emmiting socked');
+    this.socket.emit('data', text);
+  }
+  addValueToChar() {
+    setTimeout(() => {/*
+        this.dataaa.forEach(obj => {console.log('obj', obj);
+                                    obj[0].data.push(24);
+                                    obj[0].data.push(25);
+                                    obj[0].data.push(26);
+        });*/
+        this.dataaa[0][0].data.push(25);
+        this.BarChartLabels[0].push('5:20');
+        this.dataaa[0][1].data.push(27);
+        this.BarChartLabels[0].push('5:20');
+        this.dataaa[1][0].data.push(50);
+        this.BarChartLabels[1].push('5:20');
+        this.dataaa[1][0].data.push(10);
+        this.BarChartLabels[1].push('5:21');
+        this.dataaa[1][0].data.push(60);
+        this.BarChartLabels[1].push('5:50');
+        console.log('this.dataaa[0].data', this.dataaa[0][0].data);
+        console.log('this.BarChartLabels', this.BarChartLabels);
+        this.Batterys[0] = 200;
+        this.ref.detectChanges();
+      },
+      4000);
   }
 }

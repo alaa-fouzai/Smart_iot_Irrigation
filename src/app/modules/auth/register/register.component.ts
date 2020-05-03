@@ -3,7 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import {Router} from '@angular/router';
-
+import {User} from '../../../models/Use.model';
+import { AuthService } from 'angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
+import { SocialUser } from 'angularx-social-login';
 
 declare var $;
 
@@ -16,9 +19,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   loading = false;
   submitted = false;
+  private user: SocialUser;
+  private loggedIn: boolean;
   UserapiUrl = 'api/users/register';
+  RegisterWithGmailApiUrl = 'api/users/RegisterGmail';
   constructor(
-    private formBuilder: FormBuilder, private http: HttpClient, private router: Router
+    private formBuilder: FormBuilder, private http: HttpClient, private router: Router, private authService: AuthService
   ) {
   }
 
@@ -82,6 +88,58 @@ export class RegisterComponent implements OnInit, OnDestroy {
       console.log(JSON.stringify(error.json()));
     });
     }
+  }
+  RegisterWithGmail() {
+    console.log('connect With Gmail');
+    try {
+      this.authService.signOut();
+    } catch (e) {}
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+    this.authService.authState.subscribe((user) => {
+      console.log('user from inside subscribe', this.user);
+      this.user = user;
+      this.loggedIn = (user != null);
+      if (this.loggedIn) {
+        this.RegisterSocial(this.RegisterWithGmailApiUrl , this.user);
+      }
+    });
+  }
+  RegisterSocial(url , response) {
+
+    this.http.post(url,
+      {
+        res : response,
+      } ).subscribe(data => {
+      console.log(data);
+      const resSTR = JSON.stringify(data);
+      const resJSON = JSON.parse(resSTR);
+      console.log(resJSON.token);
+      if (resJSON.status === 'ok') {
+        Swal.fire(
+          'Welcome!',
+          resJSON.message,
+          'success'
+        );
+        console.log('this.authService.authState', this.authService.authState);
+        this.authService.signOut();
+        this.router.navigate(['auth/login']);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: resJSON.message,
+        });
+        this.authService.signOut();
+      }
+    }, error => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      });
+      console.log(JSON.stringify(error));
+      this.authService.signOut();
+    });
   }
 
 }
