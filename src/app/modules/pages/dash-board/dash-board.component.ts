@@ -161,7 +161,7 @@ export class DashBoardComponent implements OnInit {
     });
     this.Loaded = true;
     this.ref.detectChanges();
-    this.addValueToChar();
+    // this.addValueToChar();
   }
 
   private async load_weither() {
