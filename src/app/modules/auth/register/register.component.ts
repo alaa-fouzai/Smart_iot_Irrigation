@@ -108,7 +108,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     this.http.post(url,
       {
-        res : response,
+        resp : response,
       } ).subscribe(data => {
       console.log(data);
       const resSTR = JSON.stringify(data);
@@ -138,8 +138,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
         text: 'Something went wrong!',
       });
       console.log(JSON.stringify(error));
-      this.authService.signOut();
     });
+    this.authService.signOut();
   }
 
 }

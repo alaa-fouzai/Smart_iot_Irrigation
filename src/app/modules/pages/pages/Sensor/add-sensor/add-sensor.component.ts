@@ -19,18 +19,22 @@ export class AddSensorComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private http: HttpClient, private router: Router) { }
   AddSensorForm: FormGroup;
+  Sensorfound = 'NaN';
+  SensorId;
+  SensorFoundId;
   loading = false;
   public el = new mapboxgl.Marker();
   public em = new mapboxgl.Marker({color: 'red'});
   submitted = false;
   public locations: Array<Location> = [];
-  AddSiteApiUrl = 'api/location/';
+  AddSensorApiUrl = 'api/location/';
   scope;
   Longitude = 0;
   Latiude = 0;
   map: mapboxgl.Map;
   private CurrentUser: any;
   AddSensorUrl = 'api/sensors/Add';
+  findSensorApiUrl = 'api/sensors/find';
   selected;
   SensorTypes = ['Temperature', 'humidity', ];
   public model: any;
@@ -42,15 +46,16 @@ export class AddSensorComponent implements OnInit {
       distinctUntilChanged(),
       map(term => term === '' ? []
         : this.SensorTypes.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
-    )
+    );
   ngOnInit() {
     this.AddSensorForm = this.formBuilder.group({
       SensorName: ['', Validators.required],
-      SensorType: ['', Validators.required],
+      SensorId: ['', Validators.required],
       SensorCoordinates : [this.Longitude, this.Latiude],
       SensorLocation : ['', Validators.required],
       Description: ['', [Validators.maxLength(255)]],
     });
+    this.Sensorfound = 'NaN';
     this.load_data();
 
   }
@@ -64,7 +69,7 @@ export class AddSensorComponent implements OnInit {
       this.http.post(this.AddSensorUrl,
         {
           SensorName : this.AddSensorForm.get('SensorName').value,
-          SensorType : this.AddSensorForm.get('SensorType').value,
+          SensorId : this.SensorFoundId,
           Description : this.AddSensorForm.get('Description').value,
           SensorCoordinates : [this.Longitude, this.Latiude],
           LocationId : this.AddSensorForm.get('SensorLocation').value,
@@ -92,9 +97,9 @@ export class AddSensorComponent implements OnInit {
           icon: 'error',
           title: 'Oops...',
           text: 'Something went wrong!',
-          footer: JSON.stringify(error.json())
+          footer: JSON.stringify(error)
         });
-        console.log(JSON.stringify(error.json()));
+        console.log(JSON.stringify(error));
       });
     }
   }
@@ -152,7 +157,7 @@ export class AddSensorComponent implements OnInit {
     const options = {
       params: new HttpParams().append('token', localStorage.getItem('token'))
     };
-    await this.http.get(this.AddSiteApiUrl, options).subscribe(data => {
+    await this.http.get(this.AddSensorApiUrl, options).subscribe(data => {
       const resSTR = JSON.stringify(data);
       const resJSON = JSON.parse(resSTR);
       if (resJSON.status === 'ok') {
@@ -187,4 +192,46 @@ export class AddSensorComponent implements OnInit {
     return this.locations;
   }
 
+  searchAnimation() {
+    this.Sensorfound = 'searching';
+    this.findSensor();
+  }
+  findSensor() {
+    console.log('SensorId ', this.AddSensorForm.get('SensorId').value);
+    const options = {
+        params: new HttpParams().append('token', localStorage.getItem('token'))
+      };
+    this.http.post(this.findSensorApiUrl,
+        {
+          Sensorid : this.AddSensorForm.get('SensorId').value,
+        }, options ).subscribe(data => {
+        console.log(data);
+        const resSTR = JSON.stringify(data);
+        const resJSON = JSON.parse(resSTR);
+        console.log(resJSON.token);
+        if (resJSON.status === 'ok') {
+          Swal.fire(
+            'Found !',
+            resJSON.message,
+            'success'
+          );
+          this.Sensorfound = 'found';
+          this.SensorFoundId = resJSON.SensorFoundId;
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: resJSON.message,
+          });
+          this.Sensorfound = 'done';
+        }
+      }, error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+        });
+        console.log(JSON.stringify(error));
+      });
+  }
 }

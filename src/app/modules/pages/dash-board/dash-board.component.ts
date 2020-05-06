@@ -3,7 +3,7 @@ import { UserService} from '../../../services/user.service';
 import { Injectable } from '@angular/core';
 import {User} from '../../../models/Use.model';
 import {Router} from '@angular/router';
-import {PageService} from '../../../modules/pages/pages/page.service';
+import {PageService} from '../pages/page.service';
 import {Location} from '../../../models/Location.model';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Sensor} from '../../../models/Sensor.model';
@@ -27,6 +27,7 @@ export class DashBoardComponent implements OnInit {
   weitherData;
   weitherData1 = [];
   checked;
+  public CurrentLocation: Location;
   public dataaa = [];
   public Batterys = [];
   public lastReadTime = [];
@@ -95,7 +96,9 @@ export class DashBoardComponent implements OnInit {
     await this.http.get(this.SensorsApiUrl, options).subscribe(data => {
       const resSTR = JSON.stringify(data);
       const resJSON = JSON.parse(resSTR);
+      // console.log('CurrentLocation' , this.CurrentLocation);
       if (resJSON.status === 'ok') {
+        this.CurrentLocation = resJSON.location;
         resJSON.response.forEach((item1) => {
           const sens = new Sensor();
           sens.Name = item1.name;
@@ -114,6 +117,7 @@ export class DashBoardComponent implements OnInit {
           title: 'Oops...',
           text: resJSON.message,
         });
+        return ;
       }
     }, error => {
       Swal.fire({
@@ -121,6 +125,7 @@ export class DashBoardComponent implements OnInit {
         title: 'Oops...',
         text: 'Something went wrong!',
       });
+      return ;
     });
     return this.Sensors;
   }
@@ -150,8 +155,6 @@ export class DashBoardComponent implements OnInit {
       BarChartData = [
         { data : temp , label: 'temperature' , borderColor : 'rgba(243, 204, 6 , 1)' , fill : false },
         { data : hum , label: 'humidité'  , borderColor : 'rgba(45, 243, 6, 1)' , fill : false },
-        { data : tempNominal , label: 'Temperaure Optimale', borderColor : 'rgba(255, 90, 90, 0.8)' , fill : false },
-        { data : humNominal , label: 'Humidite Optimale', borderColor : 'rgba(90, 90, 255, 1)' , fill : false },
       ];
       this.dataaa.push(BarChartData);
       this.BarChartLabels.push(labels);
@@ -160,7 +163,6 @@ export class DashBoardComponent implements OnInit {
       this.lastReadTime.push(lT);
     });
     this.Loaded = true;
-    this.ref.detectChanges();
     // this.addValueToChar();
   }
 
