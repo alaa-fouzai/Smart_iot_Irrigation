@@ -20,18 +20,15 @@ export class DashBoardComponent implements OnInit {
   private SensorsApiUrl = '/api/dashboard/SensorsData';
   private WeitherApiUrl = '/api/dashboard/weither';
   private socket = io('http://localhost:3000/dashboard/IrrigationState');
-  public Sensors: Array<Sensor> = [];
+  private Sensors: Array<Sensor> = [];
   Loaded = false;
   weitherLoaded = false;
   LocationName = '';
   weitherData;
   weitherData1 = [];
   checked;
-  public CurrentLocation: Location;
-  public dataaa = [];
-  public Batterys = [];
-  public lastReadTime = [];
-  public BarChartLabels = [];
+  private CurrentLocation: Location;
+  private ChartTab = [];
   message: string;
   color = 'primary';
   mode = 'determinate';
@@ -42,13 +39,13 @@ export class DashBoardComponent implements OnInit {
     { data : [65 , 45 , 45 , 87 , 9 , 78], label: 'humidity'}
   ] ;*/
   BarChartData1 = [
-    { data : [5 , 8 , 2 , 5 , 5 , 4], label: 'temperature'},
-    { data : [65 , 45 , 45 , 87 , 9 , 78], label: 'humidity'}
-  ] ;
+    {data: [5, 8, 2, 5, 5, 4], label: 'temperature'},
+    {data: [65, 45, 45, 87, 9, 78], label: 'humidity'}
+  ];
   BarChartOptions = {
     scaleShowVerticalLines: false,
     responsive: true,
-    backgroundColor : [
+    backgroundColor: [
       'rgba(255, 99, 132, 0.2)',
       'rgba(54, 162, 235, 0.2)',
       'rgba(255, 206, 86, 0.2)'
@@ -64,24 +61,29 @@ export class DashBoardComponent implements OnInit {
   };
   // BarChartLabels = ['2016', '2017', '2018' , '2019' , '2020' ];
   BarChartType = 'line';
-  BarChartLegend = true ;
-  constructor(private router: Router, private pageServise: PageService , private http: HttpClient , private ref: ChangeDetectorRef) {
+  BarChartLegend = true;
+
+  constructor(private router: Router, private pageServise: PageService, private http: HttpClient, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit() {
     // this.socket.join();
     this.weitherLoaded = false;
     this.CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.pageServise.currentMessage.subscribe(message => {this.message = message;
-                                                          if (this.message !== 'none') {
+    this.pageServise.currentMessage.subscribe(message => {
+      this.message = message;
+      if (this.message !== 'none') {
         this.load_data();
         this.load_weither();
-        this.pageServise.IrrigationState(localStorage.getItem('token') , this.message );
+        this.pageServise.IrrigationState(localStorage.getItem('token'), this.message);
       }
     });
-    this.pageServise.AutomaticIrrigation.subscribe(message => {console.log('IrrigationService' , message);
-                                                               this.checked = message ; });
-      }
+    this.pageServise.AutomaticIrrigation.subscribe(message => {
+      console.log('IrrigationService', message);
+      this.checked = message;
+    });
+  }
+
   async load_data() {
     this.Sensors = [];
     let param = this.message;
@@ -91,7 +93,7 @@ export class DashBoardComponent implements OnInit {
     }
     const options = {
 
-      params: new HttpParams().append('token', localStorage.getItem('token')).append('location_id', param )
+      params: new HttpParams().append('token', localStorage.getItem('token')).append('location_id', param)
     };
     await this.http.get(this.SensorsApiUrl, options).subscribe(data => {
       const resSTR = JSON.stringify(data);
@@ -117,7 +119,7 @@ export class DashBoardComponent implements OnInit {
           title: 'Oops...',
           text: resJSON.message,
         });
-        return ;
+        return;
       }
     }, error => {
       Swal.fire({
@@ -125,15 +127,14 @@ export class DashBoardComponent implements OnInit {
         title: 'Oops...',
         text: 'Something went wrong!',
       });
-      return ;
+      return;
     });
     return this.Sensors;
   }
+
   data_process(Sens) {
-    this.dataaa = [];
-    this.BarChartLabels = [];
-    this.Batterys = [];
-    this.lastReadTime = [];
+    this.ChartTab = [];
+    console.log('sensors ', Sens);
     Sens.forEach(item => {
       const temp = [];
       const hum = [];
@@ -142,25 +143,34 @@ export class DashBoardComponent implements OnInit {
       const labels = [];
       let batt;
       let lT;
-      item.data.forEach(item1 => {temp.push(item1.temperature); hum.push(item1.humidite ); humNominal.push(10) ;
-                                  tempNominal.push(30);
-                                  const date = new Date(item1.time) ;
-                                  let min ;
-                                  date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
-                                  labels.push(date.getHours() + ':' + min + ' ');
-                                  batt = item1.batterie ;
-                                  lT = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
-                                    '/' + date.getFullYear(); } );
+      item.data.forEach(item1 => {
+          temp.push(item1.temperature);
+          hum.push(item1.humidite);
+          humNominal.push(10);
+          tempNominal.push(30);
+          const date = new Date(item1.time);
+          let min;
+          date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
+          labels.push(date.getHours() + ':' + min + ' ');
+          batt = item1.batterie;
+          lT = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
+            '/' + date.getFullYear();
+        }
+      );
       let BarChartData = [];
       BarChartData = [
-        { data : temp , label: 'temperature' , borderColor : 'rgba(243, 204, 6 , 1)' , fill : false },
-        { data : hum , label: 'humidité'  , borderColor : 'rgba(45, 243, 6, 1)' , fill : false },
+        {data: temp, label: 'temperature', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
+        {data: hum, label: 'humidité', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
       ];
-      this.dataaa.push(BarChartData);
-      this.BarChartLabels.push(labels);
-      // const batt = item.data[item.data.length].batterie;
-      this.Batterys.push(batt);
-      this.lastReadTime.push(lT);
+      this.ChartTab.push({
+        SensorId: item.id,
+        SensorData: BarChartData,
+        SensorBattery: batt,
+        SensorLastRead: lT,
+        SensorLabel: labels,
+        SensorName: item.Name
+      });
+      console.log('char data :', this.ChartTab);
     });
     this.Loaded = true;
     // this.addValueToChar();
@@ -184,32 +194,32 @@ export class DashBoardComponent implements OnInit {
       this.weitherData = resJSON.message;
       // console.log('weither data', this.weitherData);
       let currentDay = 0;
-      let i = 0 ;
+      let i = 0;
       let weither: any = {};
       let weitherByTime = [];
       this.weitherData1 = [];
       this.weitherData.list.forEach((item) => {
-        // console.log('item', item);
-        const date = new Date(item.dt * 1000).getDate();
-        // console.log('date ', date);
-        const x: any = {};
-        x.temp = item.main.temp;
-        x.temp_max = item.main.temp_max;
-        x.temp_min = item.main.temp_min;
-        x.hum = item.main.humidity;
-        x.time = new Date(item.dt * 1000).getHours();
-        x.forcast = item.weather[0].main;
-        weitherByTime.push(x);
-        if (date !== currentDay) {
-          weither.time = new Date(item.dt * 1000).toDateString();
-          weither.data = weitherByTime;
-          currentDay = date;
-          this.weitherData1.push(weither);
-          weither = {};
-          weitherByTime = [];
-          i++;
+          // console.log('item', item);
+          const date = new Date(item.dt * 1000).getDate();
+          // console.log('date ', date);
+          const x: any = {};
+          x.temp = item.main.temp;
+          x.temp_max = item.main.temp_max;
+          x.temp_min = item.main.temp_min;
+          x.hum = item.main.humidity;
+          x.time = new Date(item.dt * 1000).getHours();
+          x.forcast = item.weather[0].main;
+          weitherByTime.push(x);
+          if (date !== currentDay) {
+            weither.time = new Date(item.dt * 1000).toDateString();
+            weither.data = weitherByTime;
+            currentDay = date;
+            this.weitherData1.push(weither);
+            weither = {};
+            weitherByTime = [];
+            i++;
+          }
         }
-      }
       );
       // console.log('weither days', this.weitherData1);
     }, error => {
@@ -223,12 +233,14 @@ export class DashBoardComponent implements OnInit {
 
   AutoFunction() {
     // console.log('checkbox triggerd', this.checked);
-    this.pageServise.changeIrrigationState(localStorage.getItem('token'), this.checked , this.message);
+    this.pageServise.changeIrrigationState(localStorage.getItem('token'), this.checked, this.message);
   }
+
   SendMessage(text) {
     // console.log('emmiting socked');
     this.socket.emit('data', text);
   }
+
   addValueToChar() {
     setTimeout(() => {/*
         this.dataaa.forEach(obj => {console.log('obj', obj);
@@ -236,21 +248,13 @@ export class DashBoardComponent implements OnInit {
                                     obj[0].data.push(25);
                                     obj[0].data.push(26);
         });*/
-        this.dataaa[0][0].data.push(25);
-        this.BarChartLabels[0].push('5:20');
-        this.dataaa[0][1].data.push(27);
-        this.BarChartLabels[0].push('5:20');
-        this.dataaa[1][0].data.push(50);
-        this.BarChartLabels[1].push('5:20');
-        this.dataaa[1][0].data.push(10);
-        this.BarChartLabels[1].push('5:21');
-        this.dataaa[1][0].data.push(60);
-        this.BarChartLabels[1].push('5:50');
-        console.log('this.dataaa[0].data', this.dataaa[0][0].data);
-        console.log('this.BarChartLabels', this.BarChartLabels);
-        this.Batterys[0] = 200;
         this.ref.detectChanges();
       },
       4000);
   }
+  PassRelayData() {
+    if (this.Loaded) {
+       this.pageServise.RelayData(this.ChartTab);
+    }
+}
 }

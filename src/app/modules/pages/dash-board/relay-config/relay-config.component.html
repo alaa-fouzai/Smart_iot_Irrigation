@@ -1,0 +1,113 @@
+<section class="content-header">
+  <h1>
+    Relay
+    <small>you can Configure you Relay</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="/dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Latest Orders</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="table-responsive">
+        <table class="table no-margin">
+          <thead>
+          <tr>
+            <th>Mode</th>
+            <th>Device Id</th>
+            <th>Schedule Irrigation</th>
+            <th>Min Value</th>
+            <th>Maximum Value</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><select class="form-control">
+              <option>Auto</option>
+              <option>Manual</option>
+            </select></td>
+            <td>123</td>
+            <td>
+
+              <div class="input-group">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+                <input type="date" class="form-control pull-right" id="reservation">
+              </div>
+            </td>
+            <td>
+              <div class="rcorners1">
+                <select class="form-control">
+                  <option>Option 1</option>
+                  <option>Option 2</option>
+                  <option>Option 3</option>
+                  <option>Option 4</option>
+                  <option>Option 5</option>
+                </select>
+              </div>
+            </td>
+            <td>
+              <select class="form-control"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+            </td>
+            <td>
+              <button class="btn btn-block btn-primary">Set</button>
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <!-- /.table-responsive -->
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer clearfix">
+      <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Start Irrigation</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="btn btn-sm btn-danger btn-flat ">Stop Irrigation</a>
+    </div>
+    <!-- /.box-footer -->
+  </div>
+
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Relays</h3>
+    </div>
+    <div class="box-body">
+
+      hello
+      <div class="overlay" *ngIf="!Loaded">
+        <i class="fa fa-refresh fa-spin"></i>
+
+      </div>
+      <div *ngFor="let chart of ChartTab;index as i;" style="width: 50%">
+        {{ chart.SensorName }}
+        <canvas baseChart style="width: 45%;"
+                [datasets]="chart.SensorData"
+                [labels]="chart.SensorLabel"
+                [options]="BarChartOptions"
+                [legend]="BarChartLegend"
+                [chartType]="BarChartType"
+      ></canvas></div>
+
+
+
+
+
+    </div>
+
+  </div>
+</section>

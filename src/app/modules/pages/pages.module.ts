@@ -17,12 +17,13 @@ import { ShowSensorComponent } from './pages/Sensor/show-sensor/show-sensor.comp
 import { RemouveSensorComponent } from './pages/Sensor/remouve-sensor/remouve-sensor.component';
 import { ModifySensorComponent } from './pages/Sensor/modify-sensor/modify-sensor.component';
 import { ChartsModule } from 'ng2-charts';
+import { RelayConfigComponent } from './dash-board/relay-config/relay-config.component';
 
 
 @NgModule({
   declarations: [PagesComponent, DashBoardComponent, AddSensorComponent,
     AddSiteComponent, ShowSitesComponent, RemouveSiteComponent, ModifySiteComponent,
-    ShowSensorComponent, RemouveSensorComponent, ModifySensorComponent],
+    ShowSensorComponent, RemouveSensorComponent, ModifySensorComponent, RelayConfigComponent],
   imports: [
     CommonModule,
     PagesRoutingModule,
