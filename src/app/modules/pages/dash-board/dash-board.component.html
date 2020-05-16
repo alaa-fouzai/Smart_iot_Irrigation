@@ -70,6 +70,40 @@
     </div>
     <!-- /.col -->
   </div>
+
+
+
+  <div class="box">
+    <ul class="horizontal">
+      <div *ngFor="let item of weitherData1">
+        <li class="weitherli"><!---
+          // cloudy https://www.theweather.com/css/images/widget/g14/new/big-4.png
+          clear https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/day_clear.png
+          // rain https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/rain.png forcast
+          https://www.dovora.com/resources/weather-icons/ --->
+          {{item.data[0].forcast}}
+          <img *ngIf="item.data[0].forcast === 'Rain' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/rain.png" style="width:40px;height:40px;" alt="Overcast with light rain" class="pull-left">
+          <img *ngIf="item.data[0].forcast === 'Clouds' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/overcast.png" style="width:40px;height:40px;" alt="Overcast with light rain" class="pull-left">
+          <img *ngIf="item.data[0].forcast === 'Clear' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/day_clear.png" style="width:40px;height:40px;" alt="Overcast with light rain" class="pull-left">
+            <span >{{item.time}}</span><br><span style="color: red;font-size: 160%">{{item.data[0].temp_max}}°</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span style="color: blue;font-size: 140%" >{{item.data[0].temp_min}}°</span>
+        </li>
+      </div>
+    </ul>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
   <div class="row">
 
     <div *ngFor="let chart of ChartTab;index as i;">
@@ -157,7 +191,7 @@
 
 
 
-  <!-- Default box -->
+  <!-- Default box
   <div class="box">
 
     <div class="box-header with-border">
@@ -179,35 +213,7 @@
           <div *ngFor="let item of weitherData1">
           <li class="classli weather"  >
 
-            {{item.time}}<br><!--
-            <span class="slink">Weather {{LocationName}}</span> <table class="fondo" style="background-color: #FFFFFF; font-family: Roboto; color: #868686;" cellpadding="0" cellspacing="0">
-            <tbody>
-            <tr class="hijo-1" style="background-color: #FFFFFF;">
-              <td class="bTempG" style="background-color: #FFFFFF;" colspan="2">
-                <span class="TgMax" style="color: #EB1924;">9°</span>
-                <span class="TgMin" style="color: #0076BA;">5°</span>
-              </td> <td class="iconG" colspan="3" style="background-color: #FFFFFF;">
-              <img src="https://www.theweather.com/css/images/widget/g14/new/big-13.png" alt="Overcast with thunderstorms">
-            </td>
-            </tr>
-            <div *ngFor="let item1 of item.data">
-            <tr class="hijo-all" style="background-color: #FFFFFF;">
-              <td class="blanco">&nbsp;</td> <td class="nomDay" style="color: #868686; background-color: #FFFFFF;">{{item1.time}}:00</td>
-              <td class="temps" style="background-color: #FFFFFF;"> <span class="TgMax" style="color: #EB1924;">{{item1.temp_max}}°</span>
-                <span class="TgMin" style="color: #0076BA;">{{item1.temp_min}}°</span></td> <td class="simb" style="background-color: #FFFFFF;">
-              <img src="https://www.theweather.com/css/images/widget/g14/new/small-7.png" alt="Overcast with light rain"> </td>
-              <td class="blanco">&nbsp;</td>
-            </tr>
-            </div>
-            <tr class="hijo-all" style="background-color: #FFFFFF;">
-              <td class="blanco">&nbsp;</td>
-
-            </tr>
-            </tbody>
-          </table>
-
-            {{item.weather[0].main}}<span class="glyphicon glyphicon-cloud" *ngIf="item.weather[0].main == 'Clouds'" ></span>
-            <span class="glyphicon glyphicon-sort-by-attributes-alt" *ngIf="item.weather[0].main == 'Rain'" ></span>-->
+            {{item.time}}<br>
             <table id="webwid" class="widget new27" style="font-family: Roboto; color: #868686; background-color: #FFFFFF; border: 0px solid #D6D6D6;">
               <tbody>
               <tr>
@@ -260,12 +266,12 @@
       </div>
       <ng-template #elseBlock>Waiting for weither data <i class="fa fa-refresh fa-spin"></i></ng-template>
 
-    <!-- /.box-body -->
+
     <div class="box-footer">
       Footer
     </div>
   </div>
-
+  -->
 
   <div class="box">
 

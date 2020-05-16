@@ -12,7 +12,7 @@
 
 <!-- Main content -->
 <section class="content">
-<div class="row">
+<div class="box">
   <!-- Default box -->
   <div class="box col-lg-2">
     <div class="box-header with-border">
@@ -29,7 +29,7 @@
     </div>
     <div class="box-body">
       <form [formGroup]="AddSiteForm" (ngSubmit)="onSubmit()">
-        <div class="container">
+
           <h1>Add Site</h1>
           <p>Please fill in this form to Add New Site.</p>
           <hr>
@@ -57,7 +57,6 @@
           <hr>
 
           <button type="submit" class="btn btn-primary btn-block btn-flat " style="width: 100px !important;">Add Site</button>
-        </div>
 
       </form>
     </div>

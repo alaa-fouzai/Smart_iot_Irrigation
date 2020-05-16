@@ -29,6 +29,7 @@ export class DashBoardComponent implements OnInit {
   checked;
   private CurrentLocation: Location;
   private ChartTab = [];
+  Chartab = {};
   message: string;
   color = 'primary';
   mode = 'determinate';
@@ -76,12 +77,14 @@ export class DashBoardComponent implements OnInit {
         this.load_data();
         this.load_weither();
         this.pageServise.IrrigationState(localStorage.getItem('token'), this.message);
+        this.pageServise.ChartUpdatefunction(localStorage.getItem('token'), this.message);
       }
     });
     this.pageServise.AutomaticIrrigation.subscribe(message => {
       console.log('IrrigationService', message);
       this.checked = message;
     });
+    this.chartsUpdate();
   }
 
   async load_data() {
@@ -112,6 +115,7 @@ export class DashBoardComponent implements OnInit {
           sens.createdate = item1.Created_date;
           this.Sensors.push(sens);
         });
+        this.pageServise.CurrentLocationData(this.CurrentLocation);
         this.data_process(this.Sensors);
       } else {
         Swal.fire({
@@ -222,6 +226,8 @@ export class DashBoardComponent implements OnInit {
         }
       );
       // console.log('weither days', this.weitherData1);
+      console.log('weither ', this.weitherData1);
+      this.pageServise.WeitherData(this.weitherData1);
     }, error => {
       Swal.fire({
         icon: 'error',
@@ -240,21 +246,58 @@ export class DashBoardComponent implements OnInit {
     // console.log('emmiting socked');
     this.socket.emit('data', text);
   }
-
-  addValueToChar() {
-    setTimeout(() => {/*
-        this.dataaa.forEach(obj => {console.log('obj', obj);
-                                    obj[0].data.push(24);
-                                    obj[0].data.push(25);
-                                    obj[0].data.push(26);
-        });*/
-        this.ref.detectChanges();
-      },
-      4000);
+  /*SensorBattery: 90
+  SensorData: Array(2)
+  0: {data: Array(9), label: "temperature", borderColor: "rgba(243, 204, 6 , 1)", fill: false, backgroundColor: "rgba(255,99,132,0.4)", …}
+  1: {data: Array(9), label: "humidité", borderColor: "rgba(45, 243, 6, 1)", fill: false, backgroundColor: "rgba(54,162,235,0.4)", …}
+  length: 2
+  __proto__: Array(0)
+  SensorId: "5e5f714b343934062cf6d757"
+  SensorLabel: Array(9)
+  0: "6:27 "
+  1: "6:28 "
+  2: "6:35 "
+  3: "6:35 "
+  4: "6:36 "
+  5: "16:08 "
+  6: "16:13 "
+  7: "19:57 "
+  8: "20:01 "
+  length: 9
+  __proto__: Array(0)
+  SensorLastRead: "20:01 14/4/2020"
+  SensorName: "sensor 1"*/
+  chartsUpdate() {
+    this.pageServise.ChartUpdateValue.subscribe(item => {
+      console.log('new chart data' , item.newData);
+      console.log('new sens Id' , item.SensId);
+      console.log('Chart data' , this.ChartTab);
+      this.ChartTab.forEach( item1 => {
+        console.log('item' , item1);
+        if (item1.SensorId === item.SensId) {
+          item1.SensorBattery = item.newData.batterie;
+          item1.SensorData.forEach(item2 => {
+            if (item2.label === 'temperature') {
+              item2.data.push(item.newData.temperature);
+            }
+            if (item2.label === 'humidité') {
+              item2.data.push(item.newData.humidite);
+            }
+          });
+          const date = new Date(item.newData.time);
+          let min;
+          date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
+          item1.SensorLabel.push(date.getHours() + ':' + min + ' ');
+          item1.SensorLastRead = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
+            '/' + date.getFullYear();
+        }
+      });
+      // this.ChartTab.SensorBattery = item.batterie;
+    });
   }
   PassRelayData() {
     if (this.Loaded) {
        this.pageServise.RelayData(this.ChartTab);
     }
-}
+  }
 }

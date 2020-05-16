@@ -131,3 +131,29 @@ table.paleBlueRows thead th:first-child {
 table.paleBlueRows tfoot td {
   font-size: 14px;
 }
+
+ul.horizontal,
+ul.horizontal li {
+  margin: 0;
+  padding: 0;
+
+}
+ul.horizontal {
+  list-style-type: none;
+  width: 100%;
+  background: white;
+  overflow: auto;
+  margin: 0 auto;
+}
+ul.horizontal li {
+  float: left;
+  width: 16%;
+  height: 60px;
+  margin: 0 1px 1px 0;
+  text-align: center;
+  background-color: white;
+  color: black;
+}
+.weitherli {
+  border: solid 1px lightgrey;
+}

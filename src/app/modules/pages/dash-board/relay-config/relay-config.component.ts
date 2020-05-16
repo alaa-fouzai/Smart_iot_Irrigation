@@ -9,6 +9,9 @@ import {PageService} from '../../../pages/pages/page.service';
 export class RelayConfigComponent implements OnInit {
   Loaded = false;
   private ChartTab = [];
+  checked;
+  message: string;
+  weitherData1 = [];
   BarChartOptions = {
     scaleShowVerticalLines: false,
     responsive: true,
@@ -29,11 +32,23 @@ export class RelayConfigComponent implements OnInit {
   // BarChartLabels = ['2016', '2017', '2018' , '2019' , '2020' ];
   BarChartType = 'line';
   BarChartLegend = true;
-
+  CurrentLocation: any;
   constructor(private pageService: PageService, private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.pageService.currentMessage.subscribe(message => {
+      this.message = message;
+      if (this.message !== 'none') {
+        this.pageService.IrrigationState(localStorage.getItem('token'), this.message);
+      }
+    });
     this.load_data();
+    this.pageService.CurrentLocation.subscribe(message => {
+      this.CurrentLocation = message;
+    });
+    this.pageService.Weither.subscribe(message => {
+      this.weitherData1 = message;
+    });
   }
   async load_data() {
     this.ChartTab = [];
@@ -44,6 +59,10 @@ export class RelayConfigComponent implements OnInit {
     });
     console.log('pageService :', this.ChartTab);
     this.ref.detectChanges();
+  }
+  AutoFunction() {
+    // console.log('checkbox triggerd', this.checked);
+    this.pageService.changeIrrigationState(localStorage.getItem('token'), this.checked, this.message);
   }
 
 }
