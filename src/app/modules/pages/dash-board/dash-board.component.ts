@@ -15,7 +15,7 @@ import * as io from 'socket.io-client';
   templateUrl: './dash-board.component.html',
   styleUrls: ['./dash-board.component.scss']
 })
-export class DashBoardComponent implements OnInit {
+export class DashBoardComponent implements OnInit , OnDestroy {
   CurrentUser = new User();
   private SensorsApiUrl = '/api/dashboard/SensorsData';
   private WeitherApiUrl = '/api/dashboard/weither';
@@ -66,11 +66,16 @@ export class DashBoardComponent implements OnInit {
 
   constructor(private router: Router, private pageServise: PageService, private http: HttpClient, private ref: ChangeDetectorRef) {
   }
-
+  ngOnDestroy() {
+    console.log('on destroy');
+    this.ChartTab = [];
+    this.pageServise.changeMessage('none');
+  }
   ngOnInit() {
     // this.socket.join();
     this.weitherLoaded = false;
     this.CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.ChartTab = [];
     this.pageServise.currentMessage.subscribe(message => {
       this.message = message;
       if (this.message !== 'none') {

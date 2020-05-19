@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {User} from '../../../models/Use.model';
 import { AuthService } from 'angularx-social-login';
+import {PageService} from '../../pages/pages/page.service';
 import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
 
 @Component({
@@ -11,13 +12,14 @@ import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-logi
 })
 export class HeaderComponent implements OnInit {
   CurrentUser = new User();
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, private authService: AuthService, private pageService: PageService) {
   }
 
   ngOnInit() {
     this.CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
   }
   onLogout() {
+    this.pageService.DisconnectNotification(this.CurrentUser.id);
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     try {

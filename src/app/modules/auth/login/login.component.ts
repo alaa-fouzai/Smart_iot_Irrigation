@@ -8,6 +8,7 @@ import {User} from '../../../models/Use.model';
 import { AuthService } from 'angularx-social-login';
 import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
 import { SocialUser } from 'angularx-social-login';
+import {PageService} from '../../pages/pages/page.service';
 declare var $;
 
 @Component({
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   UserapiUrl = 'api/users/login';
   ConnectWithGmailApiUrl = 'api/users/loginGmail';
   constructor(
-    private formBuilder: FormBuilder, private http: HttpClient, private router: Router, private authService: AuthService
+    private formBuilder: FormBuilder, private http: HttpClient, private router: Router,
+    private authService: AuthService, private pageService: PageService
   ) {
   }
 
@@ -78,6 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.CurrentUser.createdate = resJSON.UserData[0].Created_date;
           this.CurrentUser.locationIds = resJSON.UserData[0].Location_ids;
           localStorage.setItem('currentUser', JSON.stringify(this.CurrentUser));
+          this.pageService.ConnectNotification();
           this.router.navigate(['/dashboard']);
         } else {
           Swal.fire({
