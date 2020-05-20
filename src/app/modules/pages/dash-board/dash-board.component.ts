@@ -7,9 +7,10 @@ import {PageService} from '../pages/page.service';
 import {Location} from '../../../models/Location.model';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Sensor} from '../../../models/Sensor.model';
-import { DatePipe } from '@angular/common';
+import {DatePipe, PlatformLocation} from '@angular/common';
 import Swal from 'sweetalert2';
 import * as io from 'socket.io-client';
+import {first, last, take} from 'rxjs/operators';
 @Component({
   selector: 'app-dash-board',
   templateUrl: './dash-board.component.html',
@@ -21,15 +22,17 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   private WeitherApiUrl = '/api/dashboard/weither';
   private socket = io('http://localhost:3000/dashboard/IrrigationState');
   private Sensors: Array<Sensor> = [];
+  private Relays: Array<Sensor> = [];
   Loaded = false;
+  Reload = false;
   weitherLoaded = false;
   LocationName = '';
   weitherData;
   weitherData1 = [];
+  subscriber;
   checked;
   private CurrentLocation: Location;
   private ChartTab = [];
-  Chartab = {};
   message: string;
   color = 'primary';
   mode = 'determinate';
@@ -64,20 +67,32 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   BarChartType = 'line';
   BarChartLegend = true;
 
-  constructor(private router: Router, private pageServise: PageService, private http: HttpClient, private ref: ChangeDetectorRef) {
+  constructor(private router: Router, private pageServise: PageService,
+              private http: HttpClient, private ref: ChangeDetectorRef, private location: PlatformLocation) {
   }
   ngOnDestroy() {
     console.log('on destroy');
     this.ChartTab = [];
-    this.pageServise.changeMessage('none');
+    this.subscriber.unsubscribe();
+    // this.pageServise.changeMessage('none');
   }
   ngOnInit() {
+    this.initComponent();
+    this.pageServise.RefrechNeeded.subscribe(data => {
+      console.log('need new refrech now ');
+    });
+  }
+
+  private async initComponent() {
     // this.socket.join();
+    console.log('1 message', this.message);
+    this.message = '';
     this.weitherLoaded = false;
     this.CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.ChartTab = [];
-    this.pageServise.currentMessage.subscribe(message => {
+    this.subscriber = await this.pageServise.currentMessage.subscribe(message => {
       this.message = message;
+      console.log('/**************************************** message', this.message);
       if (this.message !== 'none') {
         this.load_data();
         this.load_weither();
@@ -94,6 +109,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
 
   async load_data() {
     this.Sensors = [];
+    this.Relays = [];
     let param = this.message;
     if (this.message === 'none here') {
       // @ts-ignore
@@ -110,6 +126,9 @@ export class DashBoardComponent implements OnInit , OnDestroy {
       if (resJSON.status === 'ok') {
         this.CurrentLocation = resJSON.location;
         resJSON.response.forEach((item1) => {
+          if (item1.SensorType === 'Relay') {
+            this.Relays.push(item1);
+          } else {
           const sens = new Sensor();
           sens.Name = item1.name;
           sens.SensorType = item1.SensorType;
@@ -119,7 +138,9 @@ export class DashBoardComponent implements OnInit , OnDestroy {
           sens.data = item1.data;
           sens.createdate = item1.Created_date;
           this.Sensors.push(sens);
+          }
         });
+        console.log('relays' , this.Relays);
         this.pageServise.CurrentLocationData(this.CurrentLocation);
         this.data_process(this.Sensors);
       } else {
@@ -302,7 +323,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   }
   PassRelayData() {
     if (this.Loaded) {
-       this.pageServise.RelayData(this.ChartTab);
+       this.pageServise.RelayData({chartTab : this.ChartTab , Relays : this.Relays});
     }
   }
 }

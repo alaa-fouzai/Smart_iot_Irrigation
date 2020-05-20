@@ -1,14 +1,16 @@
 import {Component, OnInit, ChangeDetectorRef, OnDestroy} from '@angular/core';
 import {PageService} from '../../../pages/pages/page.service';
+import {Sensor} from "../../../../models/Sensor.model";
 
 @Component({
   selector: 'app-relay-config',
   templateUrl: './relay-config.component.html',
   styleUrls: ['./relay-config.component.scss']
 })
-export class RelayConfigComponent implements OnInit {
+export class RelayConfigComponent implements OnInit , OnDestroy {
   Loaded = false;
   private ChartTab = [];
+  private Relays: Array<Sensor> = [];
   checked;
   message: string;
   weitherData1 = [];
@@ -38,6 +40,7 @@ export class RelayConfigComponent implements OnInit {
   ngOnInit() {
     this.pageService.currentMessage.subscribe(message => {
       this.message = message;
+      console.log('message from relay data' , message);
       if (this.message !== 'none') {
         this.pageService.IrrigationState(localStorage.getItem('token'), this.message);
       }
@@ -50,10 +53,15 @@ export class RelayConfigComponent implements OnInit {
       this.weitherData1 = message;
     });
   }
+  ngOnDestroy() {
+    console.log('relayconfig destroyed for ', this.message);
+    this.pageService.RefrechPage(true);
+  }
   async load_data() {
     this.ChartTab = [];
     await this.pageService.currentRelayMessage.subscribe(data => {
-      this.ChartTab = data;
+      this.ChartTab = data.chartTab;
+      this.Relays = data.Relays;
       this.Loaded = true;
       console.log('pageService :', this.ChartTab);
     });

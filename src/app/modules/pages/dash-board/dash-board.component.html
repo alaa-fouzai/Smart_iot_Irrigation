@@ -18,7 +18,7 @@
 
         <div class="info-box-content">
           <span class="info-box-text">Location</span>
-          <div *ngIf="!Loaded == 'searching'">&nbsp;&nbsp;&nbsp;&nbsp;Searching in progress <i class="fa fa-refresh fa-spin"></i></div>
+          <div *ngIf="!Loaded">Searching in progress <i class="fa fa-refresh fa-spin"></i></div>
           <span class="info-box-number" *ngIf="Loaded">{{ CurrentLocation.SiteName }}</span>
         </div>
         <!-- /.info-box-content -->
@@ -48,8 +48,9 @@
         <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
 
         <div class="info-box-content">
-          <span class="info-box-text">Sales</span>
-          <span class="info-box-number">760</span>
+          <span class="info-box-text">Relays</span>
+          <div *ngIf="!Loaded">Searching in progress <i class="fa fa-refresh fa-spin"></i></div>
+          <span class="info-box-number" *ngIf="Loaded">{{ this.Relays.length }} Relay</span>
         </div>
         <!-- /.info-box-content -->
       </div>
@@ -278,7 +279,7 @@
     <div class="box-header with-border">
       <h3 class="box-title ">
         <div *ngIf="checked ; else elseBlock1" >Automatic Irrigation {{LocationName}}</div>
-        <ng-template #elseBlock1>Manual Irrigation {{LocationName}}</ng-template>
+        <ng-template #elseBlock1>Manual Irrigation {{LocationName}} <div *ngIf="!Loaded">Loading... <i class="fa fa-refresh fa-spin"></i></div></ng-template>
 
       </h3>
 
@@ -295,32 +296,28 @@
       </div>
     </div>
     <div class="box-body">
-      <table class="paleBlueRows">
-        <thead>
-        <tr>
-          <th>Relay</th>
-          <th>State</th>
-          <th style="width: 200px;">Action</th>
-          <th>Last Action</th>
+      <table class="table">
+        <tbody><tr>
+          <th style="width: 5%">#</th>
+          <th style="width: 10%">Relay name :</th>
+          <th style="width: 20%">Relay Description :</th>
+          <th style="width: 20%">Relay State :</th>
+          <th style="width: 20%">Coordinance</th>
+          <th style="width: 25%">Added :</th>
         </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>Relay 1</td>
-          <td><i class="fa fa-check fa-2x" style="color: limegreen;">Active</i></td>
-          <td><button type="button" class="btn btn-block btn-danger " style="width: 200px;">Deactivate</button></td>
-          <td>22/04/2020</td>
+        <tr *ngFor="let item of Relays ; index as i;">
+          <td>{{i}}.</td>
+          <td>{{item.name}}</td>
+          <td>
+            {{item.Description}}
+          </td>
+          <td>{{item.data[item.data.length]}}</td>
+          <td>{{item.SensorCoordinates}}</td>
+          <td>{{item.Created_date | date: 'dd/MM/yyyy'}}</td>
         </tr>
-        <tr>
-          <td>Relay 2</td>
-          <td><span style="color: Tomato;"><i class="fa fa-close fa-2x">Not Active</i></span></td>
-          <td><button type="button" class="btn btn-block btn-success " style="width: 200px;"> Activate</button></td>
-          <td>22/04/2020</td>
-        </tr>
-        </tbody>
 
-      </table>
-      <div *ngIf="!checked">
+        </tbody></table>
+      <div *ngIf="!checked && Loaded">
         Irrigation is Now Manual Mode :<a class="btn btn-block btn-social btn-bitbucket" style="width: 10%" [routerLink]="['RelayConfig']" (click)="PassRelayData()"><i class="fa fa-cogs"></i> Configure</a>
       </div>
       <!---<button type="button" class="btn btn-block btn-success btn-lg" (click)="SendMessage('hello')">Pompe 1</button>--->

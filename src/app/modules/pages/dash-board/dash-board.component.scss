@@ -97,40 +97,6 @@ input:checked + .slider:before {
   background: #F7F7F7;
 }
 
-table.paleBlueRows {
-  font-family: "Times New Roman", Times, serif;
-  border: 1px solid #1A1D1A;
-  background-color: #E7EED8;
-  width: 90%;
-  height: 100px;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.paleBlueRows td, table.paleBlueRows th {
-  border: 1px solid #BFFFE5;
-  padding: 2px 2px;
-}
-table.paleBlueRows tbody td {
-  font-size: 13px;
-}
-table.paleBlueRows thead {
-  background: #1D7AA4;
-  border-bottom: 5px solid #FFFFFF;
-}
-table.paleBlueRows thead th {
-  font-size: 17px;
-  font-weight: bold;
-  color: #FFFFFF;
-  text-align: center;
-  border-left: 2px solid #FFFFFF;
-}
-table.paleBlueRows thead th:first-child {
-  border-left: none;
-}
-
-table.paleBlueRows tfoot td {
-  font-size: 14px;
-}
 
 ul.horizontal,
 ul.horizontal li {
@@ -156,4 +122,13 @@ ul.horizontal li {
 }
 .weitherli {
   border: solid 1px lightgrey;
+}
+.table {
+  background-color: #fafafa;
+  border-color: dimgrey;
+  border-collapse: collapse;
+  border-top: 1px solid grey;
+}
+table, th, td {
+  border: 1px solid grey;
 }

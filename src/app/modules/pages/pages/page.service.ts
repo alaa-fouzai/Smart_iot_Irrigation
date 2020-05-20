@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import * as io from 'socket.io-client';
 import Swal from 'sweetalert2';
 import { AuthServiceService } from '../../auth/auth-service.service';
@@ -8,8 +8,11 @@ import { AuthServiceService } from '../../auth/auth-service.service';
   providedIn: 'root'
 })
 export class PageService {
+  public currentLocationId = new Observable<string>();
   private messageSource = new BehaviorSubject<string>('none');
   currentMessage = this.messageSource.asObservable();
+  private RefrechNeededSource = new BehaviorSubject<boolean>(false);
+  RefrechNeeded = this.RefrechNeededSource.asObservable();
   private RelaySource = new BehaviorSubject<any>({});
   currentRelayMessage = this.RelaySource.asObservable();
   private dataSource = new BehaviorSubject<boolean>(false);
@@ -103,5 +106,9 @@ export class PageService {
   ConnectNotification() {
     this.Notification.emit('getNotification', {Accesstoken: localStorage.getItem('token'),
       UserId: JSON.parse(localStorage.getItem('currentUser')).id});
+  }
+  RefrechPage(state: boolean) {
+    this.RefrechNeededSource.next(state);
+    console.log('refrech page needed');
   }
 }
