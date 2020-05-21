@@ -18,22 +18,24 @@ import { RemouveSensorComponent } from './pages/Sensor/remouve-sensor/remouve-se
 import { ModifySensorComponent } from './pages/Sensor/modify-sensor/modify-sensor.component';
 import { ChartsModule } from 'ng2-charts';
 import { RelayConfigComponent } from './dash-board/relay-config/relay-config.component';
+import {AngularDateTimePickerModule} from "angular2-datetimepicker";
 
 
 @NgModule({
   declarations: [PagesComponent, DashBoardComponent, AddSensorComponent,
     AddSiteComponent, ShowSitesComponent, RemouveSiteComponent, ModifySiteComponent,
     ShowSensorComponent, RemouveSensorComponent, ModifySensorComponent, RelayConfigComponent],
-  imports: [
-    CommonModule,
-    PagesRoutingModule,
-    LayoutModule,
-    ReactiveFormsModule,
-    FormsModule,
-    NgbModule,
-    AgmCoreModule,
-    ChartsModule
-  ]
+    imports: [
+        CommonModule,
+        PagesRoutingModule,
+        LayoutModule,
+        ReactiveFormsModule,
+        FormsModule,
+        NgbModule,
+        AgmCoreModule,
+        ChartsModule,
+        AngularDateTimePickerModule
+    ]
 })
 export class PagesModule {
 }

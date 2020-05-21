@@ -106,12 +106,12 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <div class="table-responsive">
-        <table class="table no-margin">
+
+        <table class="table fa-border">
           <thead>
           <tr>
             <th>Mode</th>
-            <th>Device Id</th>
+            <th>Name</th>
             <th>Schedule Irrigation</th>
             <th>Min Value</th>
             <th>Maximum Value</th>
@@ -119,43 +119,42 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td><select class="form-control">
-              <option>Auto</option>
-              <option>AI</option>
-            </select></td>
-            <td>123</td>
-            <td>
-
-              <div class="input-group">
-                <div class="input-group-addon">
-                  <i class="fa fa-calendar"></i>
-                </div>
-                <input type="date" class="form-control pull-right" id="reservation">
+          <tr *ngFor="let relay of Relays">
+            <td style="width: 10%">
+              <select class="form-control">
+                <option>Auto</option>
+                <option>AI</option>
+              </select>
+            </td>
+            <td>{{relay.name}}</td>
+            <td style="width: 60%">
+              <div class="input-group"><span class="input-group-addon">start :</span>
+                <angular2-date-picker [(ngModel)]="date" [settings]="settings"></angular2-date-picker>
+                <span class="input-group-addon">stop :</span>
+                <angular2-date-picker [(ngModel)]="date1" [settings]="settings"></angular2-date-picker>
               </div>
             </td>
-            <td>
+            <td style="width: 10%">
               <div class="rcorners1">
                 <select class="form-control">
-                  <option>Option 1</option>
-                  <option>Option 2</option>
-                  <option>Option 3</option>
-                  <option>Option 4</option>
-                  <option>Option 5</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
                 </select>
               </div>
             </td>
-            <td>
+            <td style="width: 10%">
               <select class="form-control"><option>1</option><option>2</option><option>3</option><option>4</option></select>
             </td>
-            <td>
+            <td style="width: 10%">
               <button class="btn btn-block btn-primary">Set</button>
             </td>
           </tr>
-
           </tbody>
         </table>
-      </div>
+
       <!-- /.table-responsive -->
     </div>
     <!-- /.box-body -->

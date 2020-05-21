@@ -24,6 +24,7 @@
     "@mapbox/mapbox-gl-rtl-text": "^0.2.3",
     "@ng-bootstrap/ng-bootstrap": "^5.3.0",
     "@types/mapbox-gl": "^1.7.0",
+    "angular2-datetimepicker": "^1.1.1",
     "angularx-social-login": "^2.3.1",
     "chart.js": "^2.9.3",
     "mapbox-gl": "^1.8.0",

@@ -13,6 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChartsModule } from 'ng2-charts';
 import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
 
 const config = new AuthServiceConfig([
   {
@@ -41,6 +42,7 @@ export function provideConfig() {
     NgbModule,
     ChartsModule,
     SocialLoginModule,
+    AngularDateTimePickerModule,
   ],
   providers: [ AuthServiceService , AuthGuardGuard ,
     {

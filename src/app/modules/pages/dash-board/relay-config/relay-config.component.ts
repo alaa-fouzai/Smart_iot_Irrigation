@@ -1,6 +1,6 @@
 import {Component, OnInit, ChangeDetectorRef, OnDestroy} from '@angular/core';
 import {PageService} from '../../../pages/pages/page.service';
-import {Sensor} from "../../../../models/Sensor.model";
+import {Sensor} from '../../../../models/Sensor.model';
 
 @Component({
   selector: 'app-relay-config',
@@ -13,6 +13,15 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
   private Relays: Array<Sensor> = [];
   checked;
   message: string;
+  date: Date = new Date();
+  date1: Date = new Date();
+  settings = {
+    bigBanner: true,
+    timePicker: true,
+    format: 'hh:mm dd-MM-yyyy',
+    defaultOpen: false,
+    closeOnSelect : false
+  };
   weitherData1 = [];
   BarChartOptions = {
     scaleShowVerticalLines: false,
