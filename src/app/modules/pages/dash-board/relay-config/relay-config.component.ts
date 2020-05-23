@@ -15,6 +15,7 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
   message: string;
   date: Date = new Date();
   date1: Date = new Date();
+  currentmessage;
   settings = {
     bigBanner: true,
     timePicker: true,

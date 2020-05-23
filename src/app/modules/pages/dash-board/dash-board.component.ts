@@ -23,6 +23,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   private socket = io('http://localhost:3000/dashboard/IrrigationState');
   private Sensors: Array<Sensor> = [];
   private Relays: Array<Sensor> = [];
+  private History = [];
   Loaded = false;
   Reload = false;
   weitherLoaded = false;
@@ -324,6 +325,19 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   PassRelayData() {
     if (this.Loaded) {
        this.pageServise.RelayData({chartTab : this.ChartTab , Relays : this.Relays});
+    }
+  }
+
+  passHistoryData(chart) {
+    if (this.Loaded) {
+      console.log('sensors for history ', this.Sensors);
+      console.log('chart for history ', chart.SensorId);
+      this.Sensors.forEach(item => {
+        if (chart.SensorId === item.id) {
+          this.pageServise.HistoryData({Sensor : item});
+          return;
+        }
+      });
     }
   }
 }

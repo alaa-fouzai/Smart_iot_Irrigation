@@ -15,6 +15,8 @@ export class PageService {
   RefrechNeeded = this.RefrechNeededSource.asObservable();
   private RelaySource = new BehaviorSubject<any>({});
   currentRelayMessage = this.RelaySource.asObservable();
+  private historySource = new BehaviorSubject<any>({});
+  currenthistoryMessage = this.historySource.asObservable();
   private dataSource = new BehaviorSubject<boolean>(false);
   AutomaticIrrigation = this.dataSource.asObservable();
   private ChartUpdateSource = new BehaviorSubject<any>({});
@@ -73,6 +75,11 @@ export class PageService {
   }
   RelayData(ChartData) {
     this.RelaySource.next(ChartData);
+    this.updateRequired = true ;
+    // console.log('update required true');
+  }
+  HistoryData(ChartData) {
+    this.historySource.next(ChartData);
     this.updateRequired = true ;
     // console.log('update required true');
   }
