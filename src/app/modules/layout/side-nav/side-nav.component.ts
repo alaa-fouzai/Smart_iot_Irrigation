@@ -3,6 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Location} from '../../../models/Location.model';
 import {PageService} from '../../../modules/pages/pages/page.service';
 import Swal from 'sweetalert2';
+import {User} from '../../../models/Use.model';
 
 
 declare var $;
@@ -16,11 +17,12 @@ export class SideNavComponent implements OnInit {
   private SideNaveApi = 'api/dashboard/sidenav';
   private names = [];
   message: string;
-
+  CurrentUser = new User();
   constructor(private http: HttpClient, private pageServise: PageService) {
   }
 
   ngOnInit() {
+    this.CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.pageServise.currentMessage.subscribe(message => this.message = message);
     this.load_data();
     $(document).ready(() => {
