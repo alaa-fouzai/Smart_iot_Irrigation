@@ -20,12 +20,13 @@ import { ChartsModule } from 'ng2-charts';
 import { RelayConfigComponent } from './dash-board/relay-config/relay-config.component';
 import {AngularDateTimePickerModule} from 'angular2-datetimepicker';
 import { HistoriqueComponent } from './dash-board/historique/historique.component';
+import {ProfileComponent} from './dash-board/profile/profile.component';
 
 
 @NgModule({
   declarations: [PagesComponent, DashBoardComponent, AddSensorComponent,
     AddSiteComponent, ShowSitesComponent, RemouveSiteComponent, ModifySiteComponent,
-    ShowSensorComponent, RemouveSensorComponent, ModifySensorComponent, RelayConfigComponent, HistoriqueComponent],
+    ShowSensorComponent, RemouveSensorComponent, ModifySensorComponent, RelayConfigComponent, HistoriqueComponent , ProfileComponent],
     imports: [
         CommonModule,
         PagesRoutingModule,

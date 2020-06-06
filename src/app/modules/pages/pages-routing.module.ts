@@ -12,6 +12,7 @@ import {RemouveSensorComponent} from './pages/Sensor/remouve-sensor/remouve-sens
 import {ModifySensorComponent} from './pages/Sensor/modify-sensor/modify-sensor.component';
 import {RelayConfigComponent} from './dash-board/relay-config/relay-config.component';
 import {HistoriqueComponent} from './dash-board/historique/historique.component';
+import {ProfileComponent} from './dash-board/profile/profile.component';
 
 
 const routes: Routes = [
@@ -28,7 +29,8 @@ const routes: Routes = [
       {path: 'Sensor/RemoveSensor', component: RemouveSensorComponent },
       {path: 'Sensor/ModifySensor', component: ModifySensorComponent },
       {path: 'RelayConfig', component: RelayConfigComponent },
-      {path: 'Historique', component: HistoriqueComponent }
+      {path: 'Historique', component: HistoriqueComponent },
+      {path: 'Profile', component: ProfileComponent }
     ]
   }
 ];

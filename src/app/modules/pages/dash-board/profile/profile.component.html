@@ -1,0 +1,166 @@
+<section class="content-header">
+  <h1>
+    User Profile
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li><a href="#">Dashboard</a></li>
+    <li class="active">User profile</li>
+  </ol>
+</section>
+<section class="content">
+
+  <div class="row">
+    <div class="col-md-3">
+
+      <!-- Profile Image -->
+      <div class="box box-primary">
+        <div class="box-body box-profile">
+          {{Loaded}}<div *ngIf="!Loaded"><i class="fa fa-refresh fa-spin"></i></div>
+          <img class="profile-user-img img-responsive img-circle" src="assets/dist/img/user2-160x160.jpg" alt="User profile picture">
+          <div *ngIf="!Loaded"><i class="fa fa-refresh fa-spin"></i></div>
+          <h3 class="profile-username text-center" *ngIf="Loaded">{{user.FirstName}} {{user.LastName}}</h3>
+          <p class="text-muted text-center">Owner</p>
+
+          <ul class="list-group list-group-unbordered">
+            <li class="list-group-item">
+              <b *ngIf="!Loaded">Searching in progress <i class="fa fa-refresh fa-spin"></i></b>
+              <b>Email</b> <a class="pull-right"*ngIf="Loaded">{{user.email}}</a>
+            </li>
+            <li class="list-group-item">
+              <b>Member since</b> <a class="pull-right">{{user.createdate |  date:'dd/MM/yyyy'}}</a>
+            </li>
+          </ul>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+      <!-- About Me Box -->
+
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#timeline" data-toggle="tab" aria-expanded="true">Timeline</a></li>
+          <li class=""><a href="#settings" data-toggle="tab" aria-expanded="false">Settings</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="timeline">
+            <!-- The timeline -->
+            <ul class="timeline timeline-inverse">
+              <!-- timeline time label -->
+              <div class="timeline" *ngFor="let item of timeline">
+              <li class="time-label">
+                        <span class="bg-green">
+                          {{item.Created_date | date:'dd/MM/yyyy'}}
+                        </span>
+              </li>
+              <!-- /.timeline-label -->
+              <!-- timeline item -->
+              <li>
+                <i class="fa fa-location-arrow bg-purple"></i>
+
+                <div class="timeline-item">
+                  <h3 class="timeline-header">Added New Location :<a href="#"></a> {{item.SiteName}}</h3>
+
+                  <div class="timeline-body">
+                        Now it Contains : {{item.Sensor_ids.length}} Sensors
+                  </div>
+                </div>
+              </li>
+              <!-- END timeline item -->
+              </div>
+            </ul>
+
+          </div>
+          <!-- /.tab-pane -->
+
+          <div class="tab-pane" id="settings">
+            <div *ngIf="!Loaded">Searching in progress <i class="fa fa-refresh fa-spin"></i></div>
+            <div *ngIf="Loaded">
+            <form class="form-horizontal" [formGroup]="userForm" >
+              <div class="form-group">
+                <label  class="col-sm-2 control-label">First Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control"  formControlName="firstName" placeholder="{{user.FirstName}}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label  class="col-sm-2 control-label">Last Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control"  formControlName="lastName" name="lastName" placeholder="{{user.LastName}}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputEmail" formControlName="email" placeholder="{{user.email}}">
+                  <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                    <div *ngIf="f.email.errors" style="color:red;">Not An Email Adress</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label  class="col-sm-2 control-label">Password</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control"  placeholder="Old Password" formControlName="Password" type="password" >
+                  <div *ngIf="submitted && f.Password.errors" class="invalid-feedback">
+                    <div *ngIf="f.Password.errors.required" style="color:red;">Password is required</div>
+                    <div *ngIf="f.Password.errors.minlength" style="color:red;">Password must be at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputExperience" class="col-sm-2 control-label">New Password</label>
+
+                <div class="col-sm-10">
+                  <input class="form-control" type="password" id="inputExperience" formControlName="NewPassword" placeholder="New Password">
+                  <div *ngIf="submitted && f.NewPassword.errors" class="invalid-feedback">
+                    <div *ngIf="f.NewPassword.errors.required" style="color:red;">Password is required</div>
+                    <div *ngIf="f.NewPassword.errors.minlength" style="color:red;">Password must be at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputExperience" class="col-sm-2 control-label">Notification</label>
+                <div class="col-sm-10">
+
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" formControlName="SMSnotification" [checked]=" user.Notifications.SMS "> SMS &nbsp;&nbsp;
+                    </label>
+                    <label>
+                      <input type="checkbox" formControlName="Emailnotification" [checked]=" user.Notifications.Email "> Email &nbsp;&nbsp;
+                    </label>
+                    <label>
+                      <input type="checkbox" formControlName="Pushnotification" [checked]=" user.Notifications.Push " > Push Notifications
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-danger" (click)="submitForm()">Submit</button>
+                </div>
+              </div>
+            </form>
+            </div>
+          </div>
+          <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+      </div>
+      <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+
+</section>

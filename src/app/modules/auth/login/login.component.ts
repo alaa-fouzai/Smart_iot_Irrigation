@@ -79,6 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.CurrentUser.email = resJSON.UserData[0].email;
           this.CurrentUser.createdate = resJSON.UserData[0].Created_date;
           this.CurrentUser.locationIds = resJSON.UserData[0].Location_ids;
+          this.CurrentUser.Notifications = resJSON.UserData[0].Notifications;
           localStorage.setItem('currentUser', JSON.stringify(this.CurrentUser));
           this.pageService.ConnectNotification();
           this.router.navigate(['/dashboard']);

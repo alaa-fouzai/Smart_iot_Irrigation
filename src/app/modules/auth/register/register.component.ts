@@ -29,7 +29,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    $('body').addClass('hold-transition login-page');
+    $('body').addClass('hold-transition register-page');
     $(() => {
       $('input').iCheck({
         checkboxClass: 'icheckbox_square-blue',
@@ -47,7 +47,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
   get f() { return this.registerForm.controls; }
   ngOnDestroy(): void {
-    $('body').removeClass('hold-transition login-page');
+    $('body').removeClass('hold-transition register-page');
   }
   onSubmit() {
     this.submitted = true;
