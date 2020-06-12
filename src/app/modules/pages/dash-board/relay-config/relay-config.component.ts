@@ -61,6 +61,7 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
     });
     this.pageService.Weither.subscribe(message => {
       this.weitherData1 = message;
+      console.log('weither data', message);
     });
   }
   ngOnDestroy() {

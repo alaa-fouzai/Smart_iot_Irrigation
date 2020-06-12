@@ -11,6 +11,7 @@ import {DatePipe, PlatformLocation} from '@angular/common';
 import Swal from 'sweetalert2';
 import * as io from 'socket.io-client';
 import {first, last, take} from 'rxjs/operators';
+import {DashboardService} from './dashboard.service';
 @Component({
   selector: 'app-dash-board',
   templateUrl: './dash-board.component.html',
@@ -30,6 +31,8 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   LocationName = '';
   weitherData;
   weitherData1 = [];
+  weitherWidget = [];
+  UVData = [];
   subscriber;
   checked;
   private CurrentLocation: Location;
@@ -69,7 +72,8 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   BarChartLegend = true;
 
   constructor(private router: Router, private pageServise: PageService,
-              private http: HttpClient, private ref: ChangeDetectorRef, private location: PlatformLocation) {
+              private http: HttpClient, private ref: ChangeDetectorRef, private location: PlatformLocation,
+              private dashboardService: DashboardService) {
   }
   ngOnDestroy() {
     console.log('on destroy');
@@ -127,6 +131,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
       if (resJSON.status === 'ok') {
         this.CurrentLocation = resJSON.location;
         resJSON.response.forEach((item1) => {
+          console.log('item', item1);
           if (item1.SensorType === 'Relay') {
             this.Relays.push(item1);
           } else {
@@ -217,13 +222,16 @@ export class DashBoardComponent implements OnInit , OnDestroy {
 
       params: new HttpParams().append('token', localStorage.getItem('token')).append('location_id', this.message)
     };
-    await this.http.get(this.WeitherApiUrl, options).subscribe(data => {
+    await this.http.get(this.WeitherApiUrl, options).subscribe(async data => {
       this.weitherLoaded = true;
       const resSTR = JSON.stringify(data);
       const resJSON = JSON.parse(resSTR);
-      this.LocationName = resJSON.message.city.name + ' ,' + resJSON.message.city.country;
-      this.weitherData = resJSON.message;
-      // console.log('weither data', this.weitherData);
+      this.weitherWidget = await this.dashboardService.ProcessWeitherdata(resJSON.message);
+      console.log('ultraviolet', resJSON.message.UVforcast);
+      this.UVData = resJSON.message.UVforcast;
+      this.LocationName = resJSON.message.weither.city.name + ' ,' + resJSON.message.weither.city.country;
+      this.weitherData = resJSON.message.weither;
+      console.log('weither data', this.weitherData);
       let currentDay = 0;
       let i = 0;
       let weither: any = {};
@@ -233,6 +241,8 @@ export class DashBoardComponent implements OnInit , OnDestroy {
           // console.log('item', item);
           const date = new Date(item.dt * 1000).getDate();
           // console.log('date ', date);
+          let uvdata = [];
+          uvdata = this.UVData;
           const x: any = {};
           x.temp = item.main.temp;
           x.temp_max = item.main.temp_max;
@@ -240,7 +250,29 @@ export class DashBoardComponent implements OnInit , OnDestroy {
           x.hum = item.main.humidity;
           x.time = new Date(item.dt * 1000).getHours();
           x.forcast = item.weather[0].main;
+          let index;
+          for (index = 0; index < 5 ; index++) {
+            const dateuv = new Date(uvdata[index].date * 1000).getDate();
+            const WeitherDate = new Date(item.dt * 1000).getDate();
+            if (dateuv === WeitherDate) {
+              /// console.log('found a match ' , WeitherDate , ' === ' , dateuv , 'data :' , uvdata[index].value);
+              x.uv = uvdata[index].value;
+            }
+          }
           weitherByTime.push(x);
+          /*
+          uvdata.forEach(uv => {
+            if (i > 4) {
+              break;
+            }
+            // console.log('uv', uv.date);
+            const dateuv = new Date(uv.date * 1000).getDay();
+            const WeitherDate = new Date(item.dt * 1000).getDay();
+            if (dateuv === WeitherDate) {
+              console.log('found a match ' , WeitherDate , ' === ' , dateuv);
+              x.uv = uv.value ;
+            }
+          });*/
           if (date !== currentDay) {
             weither.time = new Date(item.dt * 1000).toDateString();
             weither.data = weitherByTime;
@@ -253,7 +285,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
         }
       );
       // console.log('weither days', this.weitherData1);
-      console.log('weither ', this.weitherData1);
+      // console.log('weither ', this.weitherData1);
       this.pageServise.WeitherData(this.weitherData1);
     }, error => {
       Swal.fire({

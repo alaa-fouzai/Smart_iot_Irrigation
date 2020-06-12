@@ -50,7 +50,7 @@
         <div class="info-box-content">
           <span class="info-box-text">Relays</span>
           <div *ngIf="!Loaded">Searching in progress <i class="fa fa-refresh fa-spin"></i></div>
-          <span class="info-box-number" *ngIf="Loaded">{{ this.Relays.length }} Relay</span>
+          <span class="info-box-number" *ngIf="Loaded">{{ Relays.length.toString() }} Relay</span>
         </div>
         <!-- /.info-box-content -->
       </div>
@@ -74,29 +74,47 @@
 
 
 
-  <div class="box">
-    <ul class="horizontal">
-      <div *ngFor="let item of weitherData1">
-        <li class="weitherli"><!---
-          // cloudy https://www.theweather.com/css/images/widget/g14/new/big-4.png
-          clear https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/day_clear.png
-          // rain https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/rain.png forcast
-          https://www.dovora.com/resources/weather-icons/ --->
-          {{item.data[0].forcast}}
-          <img *ngIf="item.data[0].forcast === 'Rain' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/rain.png" style="width:40px;height:40px;" alt="Overcast with light rain" class="pull-left">
-          <img *ngIf="item.data[0].forcast === 'Clouds' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/overcast.png" style="width:40px;height:40px;" alt="Overcast with light rain" class="pull-left">
-          <img *ngIf="item.data[0].forcast === 'Clear' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/day_clear.png" style="width:40px;height:40px;" alt="Overcast with light rain" class="pull-left">
-            <span >{{item.time}}</span><br><span style="color: red;font-size: 160%">{{item.data[0].temp_max}}°</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <span style="color: blue;font-size: 140%" >{{item.data[0].temp_min}}°</span>
-        </li>
+
+
+
+
+  <div class="row">
+    <div *ngFor="let item of weitherWidget ; let i=index">
+      <div *ngIf="i<4">
+          <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box bg-aqua-active">
+          <span class="info-box-icon ">
+            <span class="info-box-icon ">
+            <img *ngIf="item.weither === 'Rain' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/rain.png" style="width:40px;height:40px;" alt="Overcast with light rain" >
+            <img *ngIf="item.weither === 'Clouds' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/overcast.png" style="width:40px;height:40px;" alt="Overcast with light rain" >
+            <img *ngIf="item.weither === 'Clear' " src="https://www.dovora.com/resources/weather-icons/showcase/modern_showcase/day_clear.png" style="width:40px;height:40px;" alt="Overcast with light rain">
+          </span>
+          </span>
+
+            <div class="info-box-content">
+              <span class="info-box-WeitherWidget">Temp : {{item.maxTemp}} °C</span>
+              <span class="info-box-WeitherWidget">humidity : {{item.humidity}}%</span>
+              <span class="info-box-WeitherWidget">precipitation : {{item.precipitation/100}} mm</span>
+              <span class="info-box-WeitherWidget">UV :</span>
+
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 100%"></div>
+              </div>
+              <span class="progress-description">
+                    {{item.date}}
+          </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
       </div>
-    </ul>
+    </div>
+
+
 
   </div>
-
-
-
-
 
 
 
@@ -284,10 +302,10 @@
       </h3>
 
       <div class="box-tools pull-right">
-        <label class="switch">
+        <!---<label class="switch">
           <input type="checkbox" [(ngModel)]="checked" (change)="AutoFunction()" data-toggle="tooltip">
           <span class="slider round"></span>
-        </label>
+        </label>---->
         <button class="btn btn-box-tool" data-toggle="tooltip" data-widget="collapse" title="Collapse"
                 type="button">
           <i class="fa fa-minus"></i></button>
@@ -301,9 +319,10 @@
           <th style="width: 5%">#</th>
           <th style="width: 10%">Relay name :</th>
           <th style="width: 20%">Relay Description :</th>
-          <th style="width: 20%">Relay State :</th>
-          <th style="width: 20%">Coordinance</th>
-          <th style="width: 25%">Added :</th>
+          <th style="width: 15%">Relay State :</th>
+          <th style="width: 15%">Coordinance</th>
+          <th style="width: 15%">Added :</th>
+          <th style="width: 20%">Action :</th>
         </tr>
         <tr *ngFor="let item of Relays ; index as i;">
           <td>{{i}}.</td>
@@ -314,12 +333,13 @@
           <td>{{item.data[item.data.length]}}</td>
           <td>{{item.SensorCoordinates}}</td>
           <td>{{item.Created_date | date: 'dd/MM/yyyy'}}</td>
+          <td><a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Start</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="btn btn-sm btn-danger btn-flat ">Stop</a></td>
         </tr>
 
         </tbody></table>
-      <div *ngIf="!checked && Loaded">
+
         Irrigation is Now Manual Mode :<a class="btn btn-block btn-social btn-bitbucket" style="width: 10%" [routerLink]="['RelayConfig']" (click)="PassRelayData()"><i class="fa fa-cogs"></i> Configure</a>
-      </div>
+
       <!---<button type="button" class="btn btn-block btn-success btn-lg" (click)="SendMessage('hello')">Pompe 1</button>--->
     </div>
   </div>

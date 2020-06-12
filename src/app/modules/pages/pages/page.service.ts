@@ -28,6 +28,7 @@ export class PageService {
   irrigation = io.connect('http://localhost:3000/dashboard/IrrigationState');
   ChartUpdate = io.connect('http://localhost:3000/Sensor/UpdateValue');
   Notification = io.connect('http://localhost:3000/dashboard/Notification');
+  RelayActionSocket = io.connect('http://localhost:3000/Sensor/Action');
   updateRequired = true;
   updateChartRequired = true;
   relayData;
@@ -117,5 +118,9 @@ export class PageService {
   RefrechPage(state: boolean) {
     this.RefrechNeededSource.next(state);
     console.log('refrech page needed');
+  }
+  RelayAction(state: any) {
+    this.RelayActionSocket.emit('newSatate', {Accesstoken: localStorage.getItem('token'),
+      UserId: JSON.parse(localStorage.getItem('currentUser')).id, newState : state});
   }
 }

@@ -3,7 +3,6 @@ import {Router} from '@angular/router';
 import {User} from '../../../models/Use.model';
 import { AuthService } from 'angularx-social-login';
 import {PageService} from '../../pages/pages/page.service';
-import { FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'app-header',
