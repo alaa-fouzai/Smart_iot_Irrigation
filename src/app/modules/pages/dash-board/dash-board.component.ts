@@ -33,6 +33,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   weitherData1 = [];
   weitherWidget = [];
   UVData = [];
+  weitherdata;
   subscriber;
   checked;
   private CurrentLocation: Location;
@@ -223,15 +224,15 @@ export class DashBoardComponent implements OnInit , OnDestroy {
       params: new HttpParams().append('token', localStorage.getItem('token')).append('location_id', this.message)
     };
     await this.http.get(this.WeitherApiUrl, options).subscribe(async data => {
-      this.weitherLoaded = true;
       const resSTR = JSON.stringify(data);
       const resJSON = JSON.parse(resSTR);
-      this.weitherWidget = await this.dashboardService.ProcessWeitherdata(resJSON.message);
+      this.weitherdata = await this.dashboardService.ProcessWeitherdata(resJSON.message);
+      this.weitherWidget = this.weitherdata.Widget;
       console.log('ultraviolet', resJSON.message.UVforcast);
       this.UVData = resJSON.message.UVforcast;
       this.LocationName = resJSON.message.weither.city.name + ' ,' + resJSON.message.weither.city.country;
       this.weitherData = resJSON.message.weither;
-      console.log('weither data', this.weitherData);
+     /* console.log('weither data', this.weitherData);
       let currentDay = 0;
       let i = 0;
       let weither: any = {};
@@ -272,7 +273,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
               console.log('found a match ' , WeitherDate , ' === ' , dateuv);
               x.uv = uv.value ;
             }
-          });*/
+          });*//*
           if (date !== currentDay) {
             weither.time = new Date(item.dt * 1000).toDateString();
             weither.data = weitherByTime;
@@ -283,10 +284,11 @@ export class DashBoardComponent implements OnInit , OnDestroy {
             i++;
           }
         }
-      );
+      );*/
       // console.log('weither days', this.weitherData1);
       // console.log('weither ', this.weitherData1);
-      this.pageServise.WeitherData(this.weitherData1);
+      this.weitherLoaded = true;
+      this.pageServise.WeitherData({widget : this.weitherdata.Widget , allWeither : this.weitherdata.allWeither});
     }, error => {
       Swal.fire({
         icon: 'error',

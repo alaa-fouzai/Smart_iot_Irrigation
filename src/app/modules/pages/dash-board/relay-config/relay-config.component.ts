@@ -23,7 +23,8 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
     defaultOpen: false,
     closeOnSelect : false
   };
-  weitherData1 = [];
+  allWeitherData;
+  wetherWidget;
   BarChartOptions = {
     scaleShowVerticalLines: false,
     responsive: true,
@@ -60,8 +61,10 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
       this.CurrentLocation = message;
     });
     this.pageService.Weither.subscribe(message => {
-      this.weitherData1 = message;
+      this.allWeitherData = message.allWeither;
+      this.wetherWidget = message.widget;
       console.log('weither data', message);
+      console.log('allWeitherData ', this.allWeitherData);
     });
   }
   ngOnDestroy() {

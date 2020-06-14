@@ -53,11 +53,25 @@ export class DashboardService {
           const x: any = {};
           x.dayOfMonth = datejour;
           x.values = [];
+          x.uv = 0;
           x.values.push(block);
           tableDesJour.push(x);
         }
       }
     );
+    let uv ;
+    tableDesJour.forEach(day => {
+      WeitherData.UVforcast.forEach(uvday => {
+        // console.log('uv ', day.dayOfMonth, ' date ' , new Date(uvday.date * 1000).toDateString());
+        if (day.dayOfMonth === new Date(uvday.date * 1000).toDateString()) {
+          uv = uvday.value;
+          // console.log('uv ', day.dayOfMonth, ' date ' , new Date(uvday.date * 1000).toDateString());
+          // console.log('uv value', uvday.value);
+          day.uv = uvday.value;
+          return ;
+        }
+      });
+    });
     console.log('weither by date' , tableDesJour);
     // get best values
     tableDesJour.forEach(item => {
@@ -86,12 +100,17 @@ export class DashboardService {
       object.maxTemp = maxTemp;
       object.weither = weither;
       object.precipitation = precipitation;
+      object.uv = item.uv;
       WeitherWidget.push(object);
-      console.log('max temp for ', item.dayOfMonth , maxTemp);
-      console.log('max hum for ', item.dayOfMonth , humidity);
-      console.log('precipitation ', item.dayOfMonth , precipitation);
+      // console.log('max temp for ', item.dayOfMonth , maxTemp);
+      // console.log('max hum for ', item.dayOfMonth , humidity);
+      //  console.log('precipitation ', item.dayOfMonth , precipitation);
     });
+    const obj: any = {};
+    obj.Widget = WeitherWidget;
+    obj.allWeither = tableDesJour;
+    console.log(obj);
     console.log('************// weither process **********');
-    return WeitherWidget;
+    return obj;
   }
 }
