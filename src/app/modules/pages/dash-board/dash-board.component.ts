@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 import * as io from 'socket.io-client';
 import {first, last, take} from 'rxjs/operators';
 import {DashboardService} from './dashboard.service';
+import {Relay} from '../../../models/Relay.model';
 @Component({
   selector: 'app-dash-board',
   templateUrl: './dash-board.component.html',
@@ -23,7 +24,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   private WeitherApiUrl = '/api/dashboard/weither';
   private socket = io('http://localhost:3000/dashboard/IrrigationState');
   private Sensors: Array<Sensor> = [];
-  private Relays: Array<Sensor> = [];
+  private Relays: Array<Relay> = [];
   private History = [];
   Loaded = false;
   Reload = false;
@@ -134,7 +135,15 @@ export class DashBoardComponent implements OnInit , OnDestroy {
         resJSON.response.forEach((item1) => {
           console.log('item', item1);
           if (item1.SensorType === 'Relay') {
-            this.Relays.push(item1);
+            const relay = new Relay();
+            relay.Name = item1.name;
+            relay.RelayType = item1.SensorType;
+            relay.RelayCoordinates = item1.SensorCoordinates;
+            relay.Description = item1.Description;
+            relay.id = item1._id;
+            relay.data = item1.data;
+            relay.createdate = item1.Created_date;
+            this.Relays.push(relay);
           } else {
           const sens = new Sensor();
           sens.Name = item1.name;
@@ -358,7 +367,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   }
   PassRelayData() {
     if (this.Loaded) {
-       this.pageServise.RelayData({chartTab : this.ChartTab , Relays : this.Relays});
+       this.pageServise.RelayData({chartTab : this.ChartTab , Relays : this.Relays , sensors : this.Sensors});
     }
   }
 

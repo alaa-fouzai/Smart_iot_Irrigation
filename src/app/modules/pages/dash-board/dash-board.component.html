@@ -111,13 +111,14 @@
         </div>
       </div>
     </div>
-
-
-
   </div>
 
 
+  <div class="callout callout-info">
+    <h4>Schedule irrigation!</h4>
 
+    <p>You can controle when to irrigate your land based on our AI or you can Schedule it yourself </p><a href="javascript:void(0)" [routerLink]="['RelayConfig']" (click)="PassRelayData()" class="btn btn-sm btn-danger btn-flat " style="text-decoration:none">Schedule Irrigation</a>
+  </div>
 
 
 
@@ -326,13 +327,13 @@
         </tr>
         <tr *ngFor="let item of Relays ; index as i;">
           <td>{{i}}.</td>
-          <td>{{item.name}}</td>
+          <td>{{item.Name}}</td>
           <td>
             {{item.Description}}
           </td>
           <td>{{item.data[item.data.length]}}</td>
-          <td>{{item.SensorCoordinates}}</td>
-          <td>{{item.Created_date | date: 'dd/MM/yyyy'}}</td>
+          <td>{{item.RelayCoordinates}}</td>
+          <td>{{item.createdate | date: 'dd/MM/yyyy'}}</td>
           <td><a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Start</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="btn btn-sm btn-danger btn-flat ">Stop</a></td>
         </tr>
 

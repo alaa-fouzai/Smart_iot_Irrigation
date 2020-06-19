@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 export class DashboardService {
   private Profile = '/api/dashboard/profile';
   private UpdateProfile = '/api/dashboard/UpdateProfile';
+  private RelayConfiguration = '/api/dashboard/RelayConfiguration';
   constructor(private http: HttpClient) { }
   getProfileData() {
     const options = {
@@ -112,5 +113,15 @@ export class DashboardService {
     console.log(obj);
     console.log('************// weither process **********');
     return obj;
+  }
+  SendRelayConfig(data: any ) {
+    console.log(data);
+    const options = {
+      params: new HttpParams().append('token', localStorage.getItem('token'))
+    };
+    return this.http.post(this.RelayConfiguration,
+      {
+        RelayConfiguration : data,
+      }, options );
   }
 }

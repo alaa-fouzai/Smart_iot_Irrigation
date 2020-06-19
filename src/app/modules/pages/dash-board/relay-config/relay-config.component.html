@@ -70,7 +70,7 @@
 
   <div class="box">
     <div class="box-header with-border">
-      <h3 class="box-title">Latest Orders {{message}}</h3>
+      <h3 class="box-title">Configure Irrigation {{CurrentLocation.SiteName}}</h3>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -86,46 +86,68 @@
           <thead>
           <tr>
             <th>Mode</th>
-            <th>Name</th>
-            <th>Schedule Irrigation</th>
-            <th>Min Value</th>
-            <th>Maximum Value</th>
-            <th></th>
+            <th>Device Id(Sensor)</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>T Max</th>
+            <th>T Min</th>
+            <th>Add Alert</th>
+            <th>Choose Relay</th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let relay of Relays">
+          <tr> <!--- *ngFor="let sensor of Sensors; index as i">--->
             <td style="width: 10%">
-              <select class="form-control">
-                <option>Auto</option>
-                <option>AI</option>
+              <select class="form-control" #Mode>
+                <option value="Manuel">Manuel</option>
+                <option value="Auto">Auto + AI</option>
               </select>
             </td>
-            <td>{{relay.name}}</td>
-            <td style="width: 60%">
+            <td>{{Sensors[0].Name}}</td>
+            <td>{{Sensors[0].Description}}</td>
+            <td>Off</td>
+            <td style="width: 25%">
               <div class="input-group"><span class="input-group-addon">start :</span>
-                <angular2-date-picker [(ngModel)]="date" [settings]="settings"></angular2-date-picker>
-                <span class="input-group-addon">stop :</span>
-                <angular2-date-picker [(ngModel)]="date1" [settings]="settings"></angular2-date-picker>
+                <angular2-date-picker [(ngModel)]="date[0]" [settings]="settings"></angular2-date-picker>
               </div>
             </td>
-            <td style="width: 10%">
+            <td style="width: 8%">
               <div class="rcorners1">
-                <select class="form-control">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                </select>
+                <input type="text" class="form-control" placeholder="80" #TMax>
               </div>
             </td>
-            <td style="width: 10%">
-              <select class="form-control"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+            <td style="width: 8%">
+              <input type="text" class="form-control" placeholder="20" #TMin>
             </td>
-            <td style="width: 10%">
-              <button class="btn btn-block btn-primary">Set</button>
+            <td style="width: 20%">
+              <!----<button class="btn btn-block btn-primary" (click)="updateIrrigation()">Choose Alert</button>---->
+              <ng-multiselect-dropdown
+                [placeholder]="'Choose Notification'"
+                [data]="dropdownList"
+                [settings]="dropdownSettings"
+                (onSelect)="onNotifSelect($event , Sensors[0])"
+                (onDeSelect)="onNotifSelect($event , Sensors[0])"
+                (onSelectAll)="onNotifAll($event , Sensors[0])"
+                (onDeSelectAll)="onNotifAll($event , Sensors[0])"
+              >
+              </ng-multiselect-dropdown>
             </td>
+            <td style="width: 20%">
+              <!----<button class="btn btn-block btn-primary" (click)="updateIrrigation()">Choose Alert</button>---->
+              <ng-multiselect-dropdown
+                [placeholder]="'Choose Relay'"
+                [data]="RelaydropdownList"
+                [settings]="RelaydropdownSettings"
+                (onSelect)="onRelaySelect($event , Sensors[0])"
+                (onSelectAll)="onSelectAll($event)"
+              >
+              </ng-multiselect-dropdown>
+            </td>
+            <td>
+              <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat " (click)="SaveIrrigation(Sensors[0] , date[0] , Mode.value , TMax.value , TMin.value )">save</a>
+            </td>
+
           </tr>
           </tbody>
         </table>
@@ -134,7 +156,7 @@
     </div>
     <!-- /.box-body -->
     <div class="box-footer clearfix">
-      <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Start Irrigation</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="btn btn-sm btn-danger btn-flat ">Stop Irrigation</a>
+      <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" (click)="StartIrrigation()">Start Irrigation</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="btn btn-sm btn-danger btn-flat ">Stop Irrigation</a>
     </div>
     <!-- /.box-footer -->
   </div>
@@ -148,15 +170,15 @@
         <i class="fa fa-refresh fa-spin"></i>
 
       </div>
-      <div *ngFor="let chart of ChartTab;index as i;" style="width: 50%">
-        {{ chart.SensorName }}
+      <!---<div *ngFor="let chart of ChartTab;index as i;" style="width: 50%">--->
+        {{ ChartTab[0].SensorName }}
         <canvas baseChart style="width: 45%;"
-                [datasets]="chart.SensorData"
-                [labels]="chart.SensorLabel"
+                [datasets]="ChartTab[0].SensorData"
+                [labels]="ChartTab[0].SensorLabel"
                 [options]="BarChartOptions"
                 [legend]="BarChartLegend"
                 [chartType]="BarChartType"
-      ></canvas></div>
+      ></canvas><!-----</div>---->
 
 
 

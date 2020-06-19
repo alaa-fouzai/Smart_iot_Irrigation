@@ -14,6 +14,7 @@ import { ChartsModule } from 'ng2-charts';
 import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 const config = new AuthServiceConfig([
   {
@@ -43,6 +44,7 @@ export function provideConfig() {
     ChartsModule,
     SocialLoginModule,
     AngularDateTimePickerModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [ AuthServiceService , AuthGuardGuard ,
     {
