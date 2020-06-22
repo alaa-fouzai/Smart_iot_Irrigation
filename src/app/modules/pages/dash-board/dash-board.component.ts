@@ -208,12 +208,19 @@ export class DashBoardComponent implements OnInit , OnDestroy {
         {data: temp, label: 'temperature', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
         {data: hum, label: 'humidité', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
       ];
+      const BarChartDataForDash = [
+        {data: temp.slice(-25), label: 'temperature', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
+        {data: hum.slice(-25), label: 'humidité', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
+      ];
+      const labelForDash = labels.slice(-25);
       this.ChartTab.push({
         SensorId: item.id,
         SensorData: BarChartData,
+        SensorDataForDash: BarChartDataForDash,
         SensorBattery: batt,
         SensorLastRead: lT,
         SensorLabel: labels,
+        LabelForDash: labelForDash,
         SensorName: item.Name
       });
       console.log('char data :', this.ChartTab);
@@ -354,10 +361,22 @@ export class DashBoardComponent implements OnInit , OnDestroy {
               item2.data.push(item.newData.humidite);
             }
           });
+          item1.SensorDataForDash.forEach(item2 => {
+            if (item2.label === 'temperature') {
+              item2.data.splice(0, 1 );
+              item2.data.push(item.newData.temperature);
+            }
+            if (item2.label === 'humidité') {
+              item2.data.splice(0, 1 );
+              item2.data.push(item.newData.humidite);
+            }
+          });
           const date = new Date(item.newData.time);
           let min;
           date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
           item1.SensorLabel.push(date.getHours() + ':' + min + ' ');
+          item1.LabelForDash.splice(0 , 1 );
+          item1.LabelForDash.push(date.getHours() + ':' + min + ' ');
           item1.SensorLastRead = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
             '/' + date.getFullYear();
         }

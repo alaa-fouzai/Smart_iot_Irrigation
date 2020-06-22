@@ -147,10 +147,9 @@
             </li>
           </ul>
 
-
           <canvas baseChart
-                  [datasets]="chart.SensorData"
-                  [labels]="chart.SensorLabel"
+                  [datasets]="chart.SensorDataForDash"
+                  [labels]="chart.LabelForDash"
                   [options]="BarChartOptions"
                   [legend]="BarChartLegend"
                   [chartType]="BarChartType"
@@ -179,13 +178,9 @@
                 <!-- /.col -->
                 <div class="col-sm-6">
                   <div class="clearfix">
-                    <span class="pull-left">Task #3</span>
-                    <small class="pull-right">60%</small>
+                    <span class="pull-left">Signal Strength :50%</span>
                   </div>
-                  <div class="progress xs">
-                    <div class="progress-bar progress-bar-green" style="width: 60%;"></div>
-                  </div>
-
+                  <span class="glyphicon glyphicon-signal"></span>
                   <div class="clearfix">
                     <span class="pull-left">Task #4</span>
                     <small class="pull-right">40%</small>
