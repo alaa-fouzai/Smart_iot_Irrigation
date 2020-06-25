@@ -153,6 +153,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
           sens.id = item1._id;
           sens.data = item1.data;
           sens.createdate = item1.Created_date;
+          sens.RelayIds = item1.Realy_ids;
           this.Sensors.push(sens);
           }
         });

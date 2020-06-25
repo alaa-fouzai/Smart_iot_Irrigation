@@ -96,7 +96,7 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
     this.pageService.currentMessage.subscribe(message => {
       this.message = message;
       console.log('message from relay data' , message);
-      if (this.message !== 'none') {
+      if (this.message !== 'none' && this.message !== 'none here') {
         this.pageService.IrrigationState(localStorage.getItem('token'), this.message);
       }
     });
@@ -234,6 +234,27 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
     if ( ! found) {
       this.RelayConfiguration.push(x);
     }
+    this.dasheService.SaveIrrigationRules(sensor.id , this.RelayConfiguration).subscribe(data => {
+        const resSTR = JSON.stringify(data);
+        const resJSON = JSON.parse(resSTR);
+        console.log(resJSON);
+        if (resJSON.status === 'ok') {
+          Swal.fire({
+            icon: 'success',
+            title: 'Saved',
+            text: resJSON.message,
+          });
+        }
+        if (resJSON.status === 'err') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Saving Rules',
+          text: resJSON.message,
+        });
+      }
+      }
+    );
+    this.RelayConfiguration = [];
     console.log('final Object' , this.RelayConfiguration);
     Swal.fire({
       icon: 'info',

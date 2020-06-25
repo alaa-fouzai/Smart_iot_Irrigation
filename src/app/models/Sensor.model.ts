@@ -6,4 +6,5 @@ export class Sensor {
   public SensorCoordinates: [];
   public createdate: Date;
   public data: [];
+  public RelayIds: [];
 }

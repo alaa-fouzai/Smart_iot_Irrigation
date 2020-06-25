@@ -9,6 +9,7 @@ export class DashboardService {
   private Profile = '/api/dashboard/profile';
   private UpdateProfile = '/api/dashboard/UpdateProfile';
   private RelayConfiguration = '/api/dashboard/RelayConfiguration';
+  private SendRules = '/api/sensors/AddRules';
   constructor(private http: HttpClient) { }
   getProfileData() {
     const options = {
@@ -122,6 +123,18 @@ export class DashboardService {
     return this.http.post(this.RelayConfiguration,
       {
         RelayConfiguration : data,
+      }, options );
+  }
+  SaveIrrigationRules(id: string, RelayConfiguration: any[]) {
+    console.log('Service');
+    console.log('id' , id , ' RelayConfiguration ', RelayConfiguration);
+    const options = {
+      params: new HttpParams().append('token', localStorage.getItem('token'))
+    };
+    return this.http.post(this.SendRules,
+      {
+        SensorId : id,
+        Rules : RelayConfiguration,
       }, options );
   }
 }
