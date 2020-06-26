@@ -27,7 +27,7 @@ export class PageService {
   Weither = this.WeitherSource.asObservable();
   irrigation = io.connect('http://localhost:3000/dashboard/IrrigationState');
   ChartUpdate = io.connect('http://localhost:3000/Sensor/UpdateValue');
-  Notification = io.connect('http://localhost:3000/dashboard/Notification');
+  Notification = io.connect('http://localhost:3000/shared/Notification');
   RelayActionSocket = io.connect('http://localhost:3000/Sensor/Action');
   updateRequired = true;
   updateChartRequired = true;
