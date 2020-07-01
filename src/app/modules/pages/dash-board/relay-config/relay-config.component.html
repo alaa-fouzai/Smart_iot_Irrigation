@@ -156,7 +156,7 @@
     </div>
     <!-- /.box-body -->
     <div class="box-footer clearfix">
-      <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" (click)="StartIrrigation()">Start Process</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="btn btn-sm btn-danger btn-flat ">Stop Process</a>
+      <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" (click)="ProcessState(Sensors[0].id , true)">Start Process</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="btn btn-sm btn-danger btn-flat " (click)="ProcessState(Sensors[0].id , false)">Stop Process</a>
     </div>
     <!-- /.box-footer -->
   </div>

@@ -95,7 +95,7 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
     };
     this.pageService.currentMessage.subscribe(message => {
       this.message = message;
-      console.log('message from relay data' , message);
+      // console.log('message from relay data' , message);
       if (this.message !== 'none' && this.message !== 'none here') {
         this.pageService.IrrigationState(localStorage.getItem('token'), this.message);
       }
@@ -178,11 +178,10 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
     // console.log('selectedItems' , this.selectedItems.toString());
   }
 
-  StartIrrigation() {// get all data from html
-    if (this.RelayConfiguration === undefined || this.RelayConfiguration.length === 0 ) {
-      return ;
-    }
-    this.dasheService.SendRelayConfig(this.RelayConfiguration).subscribe(data => {
+  ProcessState(sensId , state) {// get all data from html
+    // console.log('state' , state);
+    // console.log('id' , sensId);
+    this.dasheService.SendRelayConfig( state , sensId ).subscribe(data => {
         const resSTR = JSON.stringify(data);
         const resJSON = JSON.parse(resSTR);
         console.log(resJSON);
@@ -223,7 +222,7 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
     x.TMin = Tmin;
     // console.log('NotificationSelections' , this.NotificationSelections);
     this.NotificationSelections.forEach(item => {
-      console.log('item : ', item);
+       // console.log('item : ', item);
       if (x.SensorId === item.sensorId) {
           x.NotifSelection = item.NotifSelection;
           x.RelaySelection = item.RelaySelection;
@@ -255,7 +254,7 @@ export class RelayConfigComponent implements OnInit , OnDestroy {
       }
     );
     this.RelayConfiguration = [];
-    console.log('final Object' , this.RelayConfiguration);
+    // console.log('final Object' , this.RelayConfiguration);
     Swal.fire({
       icon: 'info',
       title: 'saved',

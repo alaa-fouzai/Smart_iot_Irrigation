@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 export class DashboardService {
   private Profile = '/api/dashboard/profile';
   private UpdateProfile = '/api/dashboard/UpdateProfile';
-  private RelayConfiguration = '/api/dashboard/RelayConfiguration';
+  private RelayConfiguration = '/api/dashboard/ProcessConfiguration';
   private SendRules = '/api/sensors/AddRules';
   constructor(private http: HttpClient) { }
   getProfileData() {
@@ -115,19 +115,20 @@ export class DashboardService {
     console.log('************// weither process **********');
     return obj;
   }
-  SendRelayConfig(data: any ) {
-    console.log(data);
+  SendRelayConfig(state: boolean , Sensorid: string) {
+    console.log('Process State', state);
     const options = {
       params: new HttpParams().append('token', localStorage.getItem('token'))
     };
     return this.http.post(this.RelayConfiguration,
       {
-        RelayConfiguration : data,
+        ProcessState : state,
+        SensorId : Sensorid,
       }, options );
   }
   SaveIrrigationRules(id: string, RelayConfiguration: any[]) {
-    console.log('Service');
-    console.log('id' , id , ' RelayConfiguration ', RelayConfiguration);
+    // console.log('Service');
+    // console.log('id' , id , ' RelayConfiguration ', RelayConfiguration);
     const options = {
       params: new HttpParams().append('token', localStorage.getItem('token'))
     };

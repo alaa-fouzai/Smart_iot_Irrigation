@@ -37,6 +37,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   weitherdata;
   subscriber;
   checked;
+  Schedule = 0;
   private CurrentLocation: Location;
   private ChartTab = [];
   message: string;
@@ -131,6 +132,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
       const resJSON = JSON.parse(resSTR);
       // console.log('CurrentLocation' , this.CurrentLocation);
       if (resJSON.status === 'ok') {
+        this.Schedule = 0;
         this.CurrentLocation = resJSON.location;
         resJSON.response.forEach((item1) => {
           console.log('item', item1);
@@ -143,6 +145,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
             relay.id = item1._id;
             relay.data = item1.data;
             relay.createdate = item1.Created_date;
+            relay.rule = item1.Rules;
             this.Relays.push(relay);
           } else {
           const sens = new Sensor();
@@ -154,12 +157,36 @@ export class DashBoardComponent implements OnInit , OnDestroy {
           sens.data = item1.data;
           sens.createdate = item1.Created_date;
           sens.RelayIds = item1.Realy_ids;
+          item1.Rules.forEach((x) => {
+            // console.log('rule ' , x);
+            const r = {
+              status : x.Status ,
+              StartTime: x.StartTime,
+              Tmax: x.Tmax,
+              Tmin: x.Tmin,
+              Notifications: x.Notifications,
+              Realy_ids: x.Realy_ids
+            };
+            sens.rule.push(r);
+            const h = sens.rule;
+            // console.log('hhhhhhhhhhhhhhh', h );
+          });
+          // console.log('rule' , item1.Rules);
+         // sens.rule.push(item1.Rules);
           this.Sensors.push(sens);
           }
         });
         console.log('relays' , this.Relays);
         this.pageServise.CurrentLocationData(this.CurrentLocation);
         this.data_process(this.Sensors);
+        this.Sensors.forEach(item => {
+          console.log('length ---------------', item.rule);
+          if (item.rule !== undefined && item.rule.length > 0) {
+            if (item.rule[item.rule.length - 1 ].status === true) {
+              this.Schedule ++;
+            }
+          }
+        });
       } else {
         Swal.fire({
           icon: 'error',

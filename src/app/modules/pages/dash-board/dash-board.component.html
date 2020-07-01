@@ -62,8 +62,9 @@
         <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
 
         <div class="info-box-content">
-          <span class="info-box-text">New Members</span>
-          <span class="info-box-number">2,000</span>
+          <span class="info-box-text">Number of Schedules</span>
+          <div *ngIf="!Loaded">Searching in progress <i class="fa fa-refresh fa-spin"></i></div>
+          <span class="info-box-number" *ngIf="Loaded">{{ Schedule }} Schedule</span>
         </div>
         <!-- /.info-box-content -->
       </div>

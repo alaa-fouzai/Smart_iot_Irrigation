@@ -6,5 +6,14 @@ export class Sensor {
   public SensorCoordinates: [];
   public createdate: Date;
   public data: [];
+  public rule = [] as  any;
   public RelayIds: [];
 }
+/*{
+    stat: boolean ,
+    StartTime: number,
+    Tmax: number,
+    Tmin: number,
+    Notifications: {},
+    Realyids: []
+  }*/

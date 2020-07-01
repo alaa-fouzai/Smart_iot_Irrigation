@@ -6,4 +6,5 @@ export class Relay {
   public RelayCoordinates: [];
   public createdate: Date;
   public data: [];
+  public rule: [];
 }
