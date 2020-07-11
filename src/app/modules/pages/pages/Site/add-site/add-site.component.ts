@@ -71,11 +71,13 @@ export class AddSiteComponent implements OnInit {
       Description: ['', [Validators.maxLength(255)]],
     });
     (mapboxgl as typeof mapboxgl).accessToken = environment.mapbox.accessToken;
-    mapboxgl.setRTLTextPlugin(
-      'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-      null,
-      true // Lazy load the plugin
-    );
+    if (mapboxgl.getRTLTextPluginStatus() !== 'loaded' ) {
+      mapboxgl.setRTLTextPlugin(
+        'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+        null,
+        true // Lazy load the plugin
+      );
+    }
     this.map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v10',

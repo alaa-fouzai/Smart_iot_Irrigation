@@ -82,6 +82,9 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   }
   ngOnDestroy() {
     console.log('on destroy');
+    if (this.CurrentUser.locationIds.length === 0) {
+      return ;
+    }
     this.ChartTab = [];
     this.subscriber.unsubscribe();
     // this.pageServise.changeMessage('none');
@@ -99,6 +102,15 @@ export class DashBoardComponent implements OnInit , OnDestroy {
     this.message = '';
     this.weitherLoaded = false;
     this.CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (this.CurrentUser.locationIds.length === 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Oops...',
+        text: 'You have no locations !!',
+      });
+      await this.router.navigate(['/dashboard/Site/Add']);
+      return ;
+    }
     this.ChartTab = [];
     this.subscriber = await this.pageServise.currentMessage.subscribe(message => {
       this.message = message;
