@@ -57,9 +57,11 @@ export class DashBoardComponent implements OnInit , OnDestroy {
     scaleShowVerticalLines: false,
     responsive: true,
     backgroundColor: [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(255, 206, 86, 0.2)'
+      'rgba(0,0,200,0.3)',
+      'rgba(0,0,200,0.3)',
+      'rgba(0,0,200,0.3)',
+      'rgba(0,200,200,0.3)',
+      'rgba(0,200,200,0.3)',
     ],
     borderColor: [
       'rgba(1, 1, 1, 1)',
@@ -212,11 +214,57 @@ export class DashBoardComponent implements OnInit , OnDestroy {
     Sens.forEach(item => {
       const temp = [];
       const hum = [];
+      const humSol1 = [];
+      const humSol2 = [];
+      const humSol3 = [];
+      const humSolMoy = [];
+      const tempSol1 = [];
       const humNominal = [];
       const tempNominal = [];
       const labels = [];
+      let BarChartData = [];
+      let BarChartDataForDash = [];
       let batt;
       let lT;
+      if (item.SensorType === 'CarteDeSol') {
+        console.log('carte de sol detected'); /*batterie: 75
+humdity1: 4.7
+humdity2: 10.2
+humdity3: 0.1
+temperatureSol: 24.5
+time: 1593612377308*/
+        item.data.forEach(item1 => {
+            humSol1.push(item1.humdity1);
+            humSol2.push(item1.humdity2);
+            humSol3.push(item1.humdity3);
+            humSolMoy.push((item1.humdity1 + item1.humdity2 + item1.humdity3) / 3 );
+            tempSol1.push(item1.temperatureSol );
+            humNominal.push(10);
+            tempNominal.push(30);
+            const date = new Date(item1.time);
+            let min;
+            date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
+            labels.push(date.getHours() + ':' + min + ' ');
+            batt = item1.batterie;
+            lT = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
+              '/' + date.getFullYear();
+          }
+        );
+        BarChartData = [
+          {data: humSol1, label: 'humidité 1', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
+          {data: humSol2, label: 'humidité 2', borderColor: 'rgba(0,0,200,0.3)', fill: false},
+          {data: humSol3, label: 'humidité 3', borderColor: 'rgba(0,0,200,0.3)', fill: false},
+          {data: humSolMoy, label: 'humidité Moyenne', borderColor: 'rgba(0,0,255,0.3)', fill: false},
+          {data: tempSol1, label: 'Temperature Sol', borderColor: 'rgba(255,0,0,0.3)', fill: false},
+        ];
+        BarChartDataForDash = [
+          {data: humSol1.slice(-25), label: 'humidité 1', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
+          {data: humSol2.slice(-25), label: 'humidité 2', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
+          {data: humSol3.slice(-25), label: 'humidité 3', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
+          {data: humSolMoy.slice(-25), label: 'humidité Moyenne', borderColor: 'rgba(145, 203, 6, 1)', fill: false},
+          {data: tempSol1.slice(-25), label: 'Temperature Sol', borderColor: 'rgba(255,0,0,0.3)', fill: false},
+        ];
+      } else {
       item.data.forEach(item1 => {
           temp.push(item1.temperature);
           hum.push(item1.humidite);
@@ -231,15 +279,15 @@ export class DashBoardComponent implements OnInit , OnDestroy {
             '/' + date.getFullYear();
         }
       );
-      let BarChartData = [];
       BarChartData = [
         {data: temp, label: 'temperature', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
         {data: hum, label: 'humidité', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
       ];
-      const BarChartDataForDash = [
+      BarChartDataForDash = [
         {data: temp.slice(-25), label: 'temperature', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
         {data: hum.slice(-25), label: 'humidité', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
       ];
+      }
       const labelForDash = labels.slice(-25);
       this.ChartTab.push({
         SensorId: item.id,
@@ -249,7 +297,8 @@ export class DashBoardComponent implements OnInit , OnDestroy {
         SensorLastRead: lT,
         SensorLabel: labels,
         LabelForDash: labelForDash,
-        SensorName: item.Name
+        SensorName: item.Name,
+        SensorType: item.SensorType
       });
       console.log('char data :', this.ChartTab);
     });
@@ -375,38 +424,91 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   chartsUpdate() {
     this.pageServise.ChartUpdateValue.subscribe(item => {
       console.log('new chart data' , item.newData);
+      console.log('new chart data length ' , item.newData);
       console.log('new sens Id' , item.SensId);
       console.log('Chart data' , this.ChartTab);
       this.ChartTab.forEach( item1 => {
         console.log('item' , item1);
         if (item1.SensorId === item.SensId) {
-          item1.SensorBattery = item.newData.batterie;
-          item1.SensorData.forEach(item2 => {
-            if (item2.label === 'temperature') {
-              item2.data.push(item.newData.temperature);
-            }
-            if (item2.label === 'humidité') {
-              item2.data.push(item.newData.humidite);
-            }
-          });
-          item1.SensorDataForDash.forEach(item2 => {
-            if (item2.label === 'temperature') {
-              item2.data.splice(0, 1 );
-              item2.data.push(item.newData.temperature);
-            }
-            if (item2.label === 'humidité') {
-              item2.data.splice(0, 1 );
-              item2.data.push(item.newData.humidite);
-            }
-          });
-          const date = new Date(item.newData.time);
-          let min;
-          date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
-          item1.SensorLabel.push(date.getHours() + ':' + min + ' ');
-          item1.LabelForDash.splice(0 , 1 );
-          item1.LabelForDash.push(date.getHours() + ':' + min + ' ');
-          item1.SensorLastRead = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
-            '/' + date.getFullYear();
+          if (item1.SensorType === 'CarteDeSol') {
+            console.log('Update Carte Sol');
+            item1.SensorBattery = item.newData.batterie;
+            item1.SensorData.forEach(item2 => {
+              if (item2.label === 'humidité 1') {
+                item2.data.push(item.newData.humdity1);
+              }
+              if (item2.label === 'humidité 2') {
+                item2.data.push(item.newData.humdity2);
+              }
+              if (item2.label === 'humidité 3') {
+                item2.data.push(item.newData.humdity3);
+              }
+              if (item2.label === 'Temperature Sol') {
+                item2.data.push(item.newData.temperatureSol);
+              }
+              if (item2.label === 'humidité Moyenne') {
+                item2.data.push((item.newData.humdity3 + item.newData.humdity2 + item.newData.humdity1) / 3);
+              }
+            });
+            item1.SensorDataForDash.forEach(item2 => {
+              if (item2.label === 'humidité 1') {
+                item2.data.splice(0, 1 );
+                item2.data.push(item.newData.humdity1);
+              }
+              if (item2.label === 'humidité 2') {
+                item2.data.splice(0, 1 );
+                item2.data.push(item.newData.humdity2);
+              }
+              if (item2.label === 'humidité 3') {
+                item2.data.splice(0, 1 );
+                item2.data.push(item.newData.humdity3);
+              }
+              if (item2.label === 'Temperature Sol') {
+                item2.data.splice(0, 1 );
+                item2.data.push(item.newData.temperatureSol);
+              }
+              if (item2.label === 'humidité Moyenne') {
+                item2.data.splice(0, 1 );
+                item2.data.push((item.newData.humdity3 + item.newData.humdity2 + item.newData.humdity1) / 3);
+              }
+            });
+            const date = new Date(item.newData.time);
+            let min;
+            date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
+            item1.SensorLabel.push(date.getHours() + ':' + min + ' ');
+            item1.LabelForDash.splice(0 , 1 );
+            item1.LabelForDash.push(date.getHours() + ':' + min + ' ');
+            item1.SensorLastRead = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
+              '/' + date.getFullYear();
+          } else {
+            item1.SensorBattery = item.newData.batterie;
+            item1.SensorData.forEach(item2 => {
+              if (item2.label === 'temperature') {
+                item2.data.push(item.newData.temperature);
+              }
+              if (item2.label === 'humidité') {
+                item2.data.push(item.newData.humidite);
+              }
+            });
+            item1.SensorDataForDash.forEach(item2 => {
+              if (item2.label === 'temperature') {
+                item2.data.splice(0, 1 );
+                item2.data.push(item.newData.temperature);
+              }
+              if (item2.label === 'humidité') {
+                item2.data.splice(0, 1 );
+                item2.data.push(item.newData.humidite);
+              }
+            });
+            const date = new Date(item.newData.time);
+            let min;
+            date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
+            item1.SensorLabel.push(date.getHours() + ':' + min + ' ');
+            item1.LabelForDash.splice(0 , 1 );
+            item1.LabelForDash.push(date.getHours() + ':' + min + ' ');
+            item1.SensorLastRead = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
+              '/' + date.getFullYear();
+          }
         }
       });
       // this.ChartTab.SensorBattery = item.batterie;

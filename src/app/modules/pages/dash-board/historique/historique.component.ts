@@ -86,17 +86,53 @@ export class HistoriqueComponent implements OnInit , OnDestroy {
   data_process(data) {
     this.ChartTab1 = [];
     this.ChartTab = [];
-    console.log('data process', data);
-    console.log('sensordata2', this.sensordata);
-    const item = data;
-    console.log('item', item);
+    const humSol1 = [];
+    const humSol2 = [];
+    const humSol3 = [];
+    const humSolMoy = [];
+    const tempSol1 = [];
     const temp = [];
     const hum = [];
     const humNominal = [];
     const tempNominal = [];
     const labels = [];
+    let BarChartData = [];
+    let BarChartData1 = [];
     let batt;
     let lT;
+    console.log('data process', data);
+    console.log('sensordata2', this.sensordata);
+    const item = data;
+    console.log('item', item);
+    if (item.SensorType === 'CarteDeSol') {
+      console.log('carte sol');
+      item.data.forEach(item1 => {
+          humSol1.push(item1.humdity1);
+          humSol2.push(item1.humdity2);
+          humSol3.push(item1.humdity3);
+          humSolMoy.push((item1.humdity1 + item1.humdity2 + item1.humdity3) / 3 );
+          tempSol1.push(item1.temperatureSol );
+          humNominal.push(10);
+          tempNominal.push(30);
+          const date = new Date(item1.time);
+          let min;
+          date.getMinutes() > 10 ? (min = date.getMinutes()) : min = '0' + date.getMinutes();
+          labels.push(date.getHours() + ':' + min + ' ');
+          batt = item1.batterie;
+          lT = date.getHours() + ':' + min + ' ' + date.getDate() + '/' + date.getMonth() +
+            '/' + date.getFullYear();
+        }
+      );
+      BarChartData = [
+        {data: humSol1, label: 'humidité 1', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
+        {data: humSol2, label: 'humidité 2', borderColor: 'rgba(0,0,200,0.3)', fill: false},
+        {data: humSol3, label: 'humidité 3', borderColor: 'rgba(0,0,200,0.3)', fill: false},
+        {data: humSolMoy, label: 'humidité Moyenne', borderColor: 'rgba(0,0,255,0.3)', fill: false},
+        ];
+      BarChartData1 = [
+        {data: tempSol1, label: 'Temperature Sol', borderColor: 'rgba(255,0,0,0.3)', fill: false},
+      ];
+    } else {
     item.data.forEach(item1 => {
         temp.push(item1.temperature);
         hum.push(item1.humidite);
@@ -111,14 +147,13 @@ export class HistoriqueComponent implements OnInit , OnDestroy {
           '/' + date.getFullYear();
       }
     );
-    let BarChartData = [];
     BarChartData = [
-      {data: temp, label: 'temperature', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
-    ];
-    let BarChartData1 = [];
+        {data: temp, label: 'temperature', borderColor: 'rgba(243, 204, 6 , 1)', fill: false},
+      ];
     BarChartData1 = [
-      {data: hum, label: 'humidité', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
-    ];
+        {data: hum, label: 'humidité', borderColor: 'rgba(45, 243, 6, 1)', fill: false},
+      ];
+    }
     this.ChartTab.push({
       SensorId: item.id,
       SensorData: BarChartData,
