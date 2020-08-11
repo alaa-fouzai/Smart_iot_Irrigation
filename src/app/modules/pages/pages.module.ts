@@ -21,7 +21,7 @@ import { RelayConfigComponent } from './dash-board/relay-config/relay-config.com
 import {AngularDateTimePickerModule} from 'angular2-datetimepicker';
 import { HistoriqueComponent } from './dash-board/historique/historique.component';
 import {ProfileComponent} from './dash-board/profile/profile.component';
-import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
+import {NgMultiSelectDropDownModule} from 'ng-multiselect-dropdown';
 
 
 @NgModule({

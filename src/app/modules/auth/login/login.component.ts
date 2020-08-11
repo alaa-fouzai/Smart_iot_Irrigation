@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Something went wrong!',
+          text: error.toString(),
         });
         console.log(JSON.stringify(error.json()));
       });

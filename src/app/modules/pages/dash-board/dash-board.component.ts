@@ -22,7 +22,7 @@ export class DashBoardComponent implements OnInit , OnDestroy {
   CurrentUser = new User();
   private SensorsApiUrl = '/api/dashboard/SensorsData';
   private WeitherApiUrl = '/api/dashboard/weither';
-  private socket = io('http://localhost:3000/dashboard/IrrigationState');
+  private socket = io('http://localhost:9000/dashboard/IrrigationState');
   private Sensors: Array<Sensor> = [];
   private Relays: Array<Relay> = [];
   private History = [];
